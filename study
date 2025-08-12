@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shifting Gradient Background with Interactive Clock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* (Your existing CSS, plus the following additions) */
+        body {
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Inter", sans-serif;
+            background: linear-gradient(90deg, #162850, #2d476c, #214b50, #4a3327);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #clock-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #clock {
+            color: #f0f0f0;
+            font-size: 4em;
+            padding: 25px;
+            border-radius: 60px;
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            text-align: center;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        #date {
+            font-size: 0.4em;
+            font-weight: 500;
+        }
+
+        #notepad {
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 400px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            color: #f0f0f0;
+            display: none;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: auto;
+            animation: fadeIn 0.5s ease;
+            max-height: 60vh;
+        }
+
+        #notepad.active {
+            display: block;
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .task {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        /* Original Checkbox Styles (for tracking) */
+        .task .tracking-checkbox {
+            margin-right: 8px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f0f0f0;
+            border-radius: 4px;
+            outline: none;
+            transition: background-color 0.2s, border-color 0.2s;
+            vertical-align: middle;
+        }
+
+        .task .tracking-checkbox:checked {
+            background-color: #f0f0f0;
+            border-color: #f0f0f0;
+        }
+
+        .task .tracking-checkbox:checked::before {
+            content: '\2713';
+            display: block;
+            text-align: center;
+            font-size: 12px;
+            line-height: 16px;
+            color: #333;
+        }
+        /* Completed Checkbox Styles */
+        .task .completed-checkbox {
+            margin-right: 8px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #00b894; /* Green border */
+            border-radius: 4px;
+            outline: none;
+            transition: background-color 0.2s, border-color 0.2s;
+            vertical-align: middle;
+        }
+        .task-checkboxes{
+            display: flex;
+            flex-direction: row;
+        }
+
+        .task .completed-checkbox:checked {
+            background-color: #00b894; /* Green background */
+            border-color: #00b894;
+        }
+
+        .task .completed-checkbox:checked::before {
+            content: '\2713';
+            display: block;
+            text-align: center;
+            font-size: 12px;
+            line-height: 16px;
+            color: white; /* White checkmark */
+        }
+        .task label {
+            cursor: pointer;
+            flex-grow: 1;
+            font-weight: 500;
+            margin: 0;
+            user-select: none;
+            padding-right: 24px;
+        }
+
+        .task label[contenteditable="true"] {
+              display: inline-block;
+              padding: 2px 5px;
+              border: 1px solid transparent;
+        }
+
+        .task label[contenteditable="true"]:focus {
+              outline: none;
+              border-color: rgba(255, 255, 255, 0.5);
+              background-color: rgba(255, 255, 255, 0.1);
+              border-radius: 4px;
+        }
+        .delete-btn {
+              position: absolute;
+              right: 5px;
+              top: 50%;
+              transform: translateY(-50%);
+              cursor: pointer;
+              color: #f0f0f0;
+              background-color: rgba(255, 0, 0, 0.3);
+              border: none;
+              border-radius: 50%;
+              width: 20px;
+              height: 20px;
+              text-align: center;
+              line-height: 20px;
+              font-size: 12px;
+              display: none;
+              transition: background-color 0.2s;
+        }
+
+        .task:hover .delete-btn {
+              display: block;
+        }
+        .delete-btn:hover{
+              background-color: rgba(255, 0, 0, 0.6);
+        }
+
+        #add-task-btn {
+              margin-top: 10px;
+              padding: 8px 12px;
+              background-color: rgba(255, 255, 255, 0.2);
+              color: #f0f0f0;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              transition: background-color 0.2s;
+              display: block;
+              width: 100%;
+              text-align: center;
+        }
+
+        #add-task-btn:hover {
+              background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .task-timer {
+            margin-left: 10px;
+            font-size: 0.8em;
+            color: #ccc;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="clock-container">
+    <div id="clock">
+        <div id="time"></div>
+        <div id="date"></div>
+    </div>
+    <div id="notepad">
+        <button id="add-task-btn">Add Task</button>
+    </div>
+</div>
+
+<script>
+const startTime = new Date(); // Record the time the page was opened
+
+function updateClock() {
+    const now = new Date();
+    document.getElementById('time').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+    document.getElementById('date').textContent = now.toLocaleDateString('en-US');
+}
+
+function handleTaskInteraction(event) {
+   // No changes here
+    if (event.target.tagName === 'INPUT' && event.target.type === 'checkbox') {
+        return; // Checkbox interaction is handled by its own listener
+    }
+    if (event.target.tagName === 'LABEL') {
+        event.preventDefault();
+        event.target.focus();
+    }
+}
+
+function addTask(taskText = 'New Task', isTrackingChecked = false, isCompletedChecked = false, elapsedTime = 0) {
+    const notepad = document.getElementById('notepad');
+    const newTaskDiv = document.createElement('div');
+    newTaskDiv.classList.add('task');
+    newTaskDiv.addEventListener('click', handleTaskInteraction);
+
+    // --- Checkbox Container ---
+    const checkboxContainer = document.createElement('div');
+    checkboxContainer.classList.add('task-checkboxes');
+    newTaskDiv.appendChild(checkboxContainer);
+
+
+    // --- Tracking Checkbox (Original) ---
+    const trackingCheckbox = document.createElement('input');
+    trackingCheckbox.type = 'checkbox';
+    trackingCheckbox.classList.add('tracking-checkbox'); // Add class
+    trackingCheckbox.checked = isTrackingChecked;
+    trackingCheckbox.setAttribute('role', 'checkbox');
+    trackingCheckbox.setAttribute('aria-checked', isTrackingChecked);
+    checkboxContainer.appendChild(trackingCheckbox); // Add to container
+
+    // --- Completed Checkbox (New) ---
+    const completedCheckbox = document.createElement('input');
+    completedCheckbox.type = 'checkbox';
+    completedCheckbox.classList.add('completed-checkbox'); // Add class
+    completedCheckbox.checked = isCompletedChecked;
+    completedCheckbox.setAttribute('role', 'checkbox');
+    completedCheckbox.setAttribute('aria-checked', isCompletedChecked);
+        completedCheckbox.addEventListener('change', () => {
+            completedCheckbox.setAttribute('aria-checked', completedCheckbox.checked);
+        saveTasks();
+    });
+    checkboxContainer.appendChild(completedCheckbox); // Add to container
+
+
+    const newLabel = document.createElement('label');
+    newLabel.setAttribute('contenteditable', 'true');
+    const taskId = `task-${Date.now()}`;
+    newLabel.setAttribute('for', taskId);
+    // trackingCheckbox.id = taskId;  // No longer needed, IDs are unique
+    newLabel.textContent = taskText;
+    newTaskDiv.appendChild(newLabel);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('delete-btn');
+    deleteBtn.textContent = 'X';
+    deleteBtn.setAttribute('aria-label', 'Delete task');
+    deleteBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        newTaskDiv.remove();
+        saveTasks();
+    });
+    newTaskDiv.appendChild(deleteBtn);
+
+    const timerSpan = document.createElement('span');
+    timerSpan.classList.add('task-timer');
+    timerSpan.textContent = formatElapsedTime(elapsedTime);
+    newTaskDiv.appendChild(timerSpan);
+
+    // Update timer on checkbox change
+    trackingCheckbox.addEventListener('change', () => {
+        trackingCheckbox.setAttribute('aria-checked', trackingCheckbox.checked);
+        if (trackingCheckbox.checked) {
+            timerSpan.dataset.startTime = Date.now() - elapsedTime;
+            timerSpan.dataset.intervalId = setInterval(() => {
+                const elapsed = Date.now() - parseInt(timerSpan.dataset.startTime, 10);
+                timerSpan.textContent = formatElapsedTime(elapsed);
+            }, 1000);
+        } else {
+            clearInterval(timerSpan.dataset.intervalId);
+            elapsedTime = Date.now() - parseInt(timerSpan.dataset.startTime, 10);
+            timerSpan.textContent = formatElapsedTime(elapsedTime);
+        }
+        saveTasks();
+    });
+
+    if (isTrackingChecked) {
+        timerSpan.dataset.startTime = Date.now() - elapsedTime;
+        timerSpan.dataset.intervalId = setInterval(() => {
+            const elapsed = Date.now() - parseInt(timerSpan.dataset.startTime, 10);
+            timerSpan.textContent = formatElapsedTime(elapsed);
+        }, 1000);
+    }
+
+    notepad.insertBefore(newTaskDiv, document.getElementById('add-task-btn'));
+    if (taskText === 'New Task') {
+        newLabel.focus();
+    }
+}
+
+function formatElapsedTime(milliseconds) {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+	function saveTasks() {
+		const tasks = [];
+		document.querySelectorAll('.task').forEach(taskDiv => {
+			const trackingCheckbox = taskDiv.querySelector('.tracking-checkbox'); // Use class selector
+			const completedCheckbox = taskDiv.querySelector('.completed-checkbox'); // Use class selector
+			const label = taskDiv.querySelector('label');
+			const timer = taskDiv.querySelector('.task-timer');
+			let elapsedTime = 0;
+
+            if (trackingCheckbox.checked) {
+                elapsedTime = Date.now() - parseInt(timer.dataset.startTime, 10);
+            } else if (timer.dataset.startTime) {
+                elapsedTime = Date.now() - parseInt(timer.dataset.startTime, 10);
+            }
+            tasks.push({
+                text: label.textContent,
+                trackingChecked: trackingCheckbox.checked,
+                completedChecked: completedCheckbox.checked, // Save completed state
+                elapsedTime: elapsedTime
+            });
+        });
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+function loadTasks() {
+    const savedTasks = localStorage.getItem('tasks');
+    if (savedTasks) {
+        const tasks = JSON.parse(savedTasks);
+        tasks.forEach(task => {
+            // Pass isCompletedChecked to addTask
+            addTask(task.text, task.trackingChecked, task.completedChecked, task.elapsedTime);
+        });
+    }
+}
+
+// Event listeners
+document.getElementById('add-task-btn').addEventListener('click', () => {
+    addTask();
+    saveTasks();
+});
+
+document.getElementById('clock').addEventListener('click', () => {
+    document.getElementById('notepad').classList.toggle('active');
+});
+
+document.querySelectorAll('.task label').forEach(label => {
+        label.addEventListener('input', saveTasks);
+});
+
+// Initial setup
+updateClock();
+setInterval(updateClock, 1000);
+loadTasks();
+</script>
+
+</body>
+</html>

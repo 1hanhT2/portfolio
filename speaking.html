@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Recorder</title>
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --text-color: #333;
+            --container-bg: #ffffff;
+            --container-shadow: rgba(0, 0, 0, 0.1);
+            --section-bg: #f9f9f9;
+            --section-border: #e0e0e0;
+            --button-bg: #007bff;
+            --button-hover: #0056b3;
+            --button-disabled: #cccccc;
+            --download-bg: #28a745;
+            --download-hover: #218838;
+            --recording-color: #d9534f;
+            --error-color: #dc3545;
+            --input-border: #ccc;
+            --input-bg: #ffffff;
+            --label-color: #555;
+            --header-color: #0056b3;
+            --link-color: #007bff;
+            --link-hover: #0056b3;
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1d21;
+            --text-color: #e0e5eb;
+            --container-bg: #282c34;
+            --container-shadow: rgba(0, 0, 0, 0.3);
+            --section-bg: #31363f;
+            --section-border: #404853;
+            --button-bg: #7ab8c5;
+            --button-hover: #a0d2db;
+            --button-disabled: #4a5462;
+            --download-bg: #28a745;
+            --download-hover: #218838;
+            --recording-color: #ff6b6b;
+            --error-color: #ff7878;
+            --input-border: #4a5462;
+            --input-bg: #31363f;
+            --label-color: #c0c5ce;
+            --header-color: #7ab8c5;
+            --link-color: #7ab8c5;
+            --link-hover: #a0d2db;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            background-color: var(--container-bg);
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--container-shadow);
+            width: 100%;
+            max-width: 500px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        h1 {
+            color: var(--header-color);
+            margin-bottom: 25px;
+            transition: color 0.3s ease;
+        }
+
+        /* Sections for controlling visibility */
+        #name-section,
+        #wait-section,
+        #record-section,
+        #download-section,
+        #error-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid var(--section-border);
+            border-radius: 5px;
+            background-color: var(--section-bg);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Initially hide sections */
+        #wait-section,
+        #record-section,
+        #download-section,
+        #error-section {
+            display: none;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--label-color);
+            transition: color 0.3s ease;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            width: calc(100% - 24px); /* Account for padding */
+            margin-bottom: 15px;
+            font-size: 1rem;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        button {
+            background-color: var(--button-bg);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        button:disabled {
+            background-color: var(--button-disabled);
+            cursor: not-allowed;
+        }
+
+        #random-number-display,
+        #wait-timer-display,
+        #record-timer-display,
+        #status-message {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            color: var(--header-color);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        #status-message.recording {
+             color: var(--recording-color); /* Red for recording */
+             animation: blink 1s linear infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        #download-link {
+            display: block; /* Make it block for better spacing */
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: var(--download-bg);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        #download-link:hover {
+            background-color: var(--download-hover);
+        }
+
+        #error-message {
+            color: var(--error-color);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 10px var(--container-shadow);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            z-index: 1000;
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: var(--button-hover);
+            transform: scale(1.1);
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background-color: #7ab8c5;
+        }
+
+        body.dark-mode .dark-mode-toggle:hover {
+            background-color: #a0d2db;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="dark-mode-toggle" id="darkModeToggle">🌙</button>
+    
+    <div class="container">
+        <h1>Audio Recording Task</h1>
+
+        <div id="name-section">
+            <label for="user-name">Please enter your name:</label>
+            <input type="text" id="user-name" name="user-name" placeholder="Your Name">
+            <button id="start-button">Start Process</button>
+        </div>
+
+        <div id="wait-section">
+            <h2>Get Ready!</h2>
+            <p>Your number is: <span id="random-number-display"></span></p>
+            <p>Please wait, recording will start in:</p>
+            <div id="wait-timer-display">--:--</div>
+            <p id="wait-info">(Microphone access will be requested after this timer)</p>
+        </div>
+
+        <div id="record-section">
+            <h2>Recording</h2>
+            <p id="status-message">Initializing...</p>
+            <p>Time remaining:</p>
+            <div id="record-timer-display">--:--</div>
+        </div>
+
+        <div id="download-section">
+            <h2>Recording Complete!</h2>
+            <p>Your audio file is ready for download.</p>
+            <a href="#" id="download-link" download="recording.webm">Download Recording</a>
+            <p style="font-size: 0.8em; margin-top: 15px;">(You can now close this page or start again by refreshing)</p>
+        </div>
+
+        <div id="error-section">
+            <h2>Error</h2>
+            <p id="error-message"></p>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const WAIT_DURATION_SECONDS = 300; // Debug: 10 seconds (Change to 300 for 5 minutes)
+        const RECORD_DURATION_SECONDS = 300; // Debug: 10 seconds (Change to 300 for 5 minutes)
+
+        // --- DOM Elements ---
+        const nameSection = document.getElementById('name-section');
+        const waitSection = document.getElementById('wait-section');
+        const recordSection = document.getElementById('record-section');
+        const downloadSection = document.getElementById('download-section');
+        const errorSection = document.getElementById('error-section');
+
+        const userNameInput = document.getElementById('user-name');
+        const startButton = document.getElementById('start-button');
+        const randomNumberDisplay = document.getElementById('random-number-display');
+        const waitTimerDisplay = document.getElementById('wait-timer-display');
+        const recordTimerDisplay = document.getElementById('record-timer-display');
+        const statusMessage = document.getElementById('status-message');
+        const downloadLink = document.getElementById('download-link');
+        const errorMessage = document.getElementById('error-message');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+
+        // --- State Variables ---
+        let userName = '';
+        let randomNumber = 0;
+        let waitIntervalId = null;
+        let recordIntervalId = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let audioStream = null;
+
+        // --- Dark Mode Functions ---
+        function setDarkMode(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.textContent = '☀️';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                document.body.classList.remove('dark-mode');
+                darkModeToggle.textContent = '🌙';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+
+        // Check for saved dark mode preference
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode === 'enabled') {
+            setDarkMode(true);
+        }
+
+        // Toggle dark mode event listener
+        darkModeToggle.addEventListener('click', () => {
+            setDarkMode(!document.body.classList.contains('dark-mode'));
+        });
+
+        // --- Functions ---
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
+        function displayError(message) {
+            console.error("Error:", message);
+            errorMessage.textContent = message;
+            // Hide other sections and show error section
+            nameSection.style.display = 'none';
+            waitSection.style.display = 'none';
+            recordSection.style.display = 'none';
+            downloadSection.style.display = 'none';
+            errorSection.style.display = 'block';
+            // Clean up any running timers/processes
+            clearInterval(waitIntervalId);
+            clearInterval(recordIntervalId);
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+            if (audioStream) {
+                audioStream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        function startWaitTimer() {
+            let timeLeft = WAIT_DURATION_SECONDS;
+            waitTimerDisplay.textContent = formatTime(timeLeft);
+
+            waitIntervalId = setInterval(() => {
+                timeLeft--;
+                waitTimerDisplay.textContent = formatTime(timeLeft);
+                if (timeLeft <= 0) {
+                    clearInterval(waitIntervalId);
+                    startRecordingProcess();
+                }
+            }, 1000);
+        }
+
+        async function startRecordingProcess() {
+            waitSection.style.display = 'none';
+            recordSection.style.display = 'block';
+            statusMessage.textContent = 'Requesting microphone access...';
+            statusMessage.classList.remove('recording'); // Ensure blink animation is off initially
+
+            try {
+                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                statusMessage.textContent = 'Microphone accessed. Starting recording...';
+
+                mediaRecorder = new MediaRecorder(audioStream);
+                audioChunks = []; // Reset chunks for new recording
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                        console.log("Received audio chunk size:", event.data.size);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    console.log("MediaRecorder stopped.");
+                    clearInterval(recordIntervalId); // Stop the timer interval
+                    statusMessage.textContent = 'Recording finished. Processing audio...';
+                    statusMessage.classList.remove('recording');
+
+                    if (audioChunks.length === 0) {
+                        console.warn("No audio chunks recorded.");
+                        displayError("No audio data was recorded. Please check microphone permissions and try again.");
+                        return;
+                    }
+
+                    // Determine MIME type (browser dependent, webm often preferred)
+                    const mimeType = mediaRecorder.mimeType || 'audio/webm';
+                    const fileExtension = mimeType.split('/')[1].split(';')[0]; // e.g., 'webm' or 'ogg'
+
+                    const audioBlob = new Blob(audioChunks, { type: mimeType });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+
+                    // Set download link
+                    downloadLink.href = audioUrl;
+                    // Sanitize username for filename
+                    const safeUserName = userName.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'user';
+                    downloadLink.download = `recording-${safeUserName}-num${randomNumber}.${fileExtension}`;
+
+                    // Show download section
+                    recordSection.style.display = 'none';
+                    downloadSection.style.display = 'block';
+                    console.log("Download link created:", downloadLink.download);
+
+                    // Stop the microphone track(s)
+                     if (audioStream) {
+                        audioStream.getTracks().forEach(track => track.stop());
+                        console.log("Microphone stream stopped.");
+                    }
+                };
+
+                mediaRecorder.onerror = (event) => {
+                     console.error("MediaRecorder error:", event.error);
+                    displayError(`Recording error: ${event.error.name} - ${event.error.message}`);
+                };
+
+                // Start Recording and Timer
+                mediaRecorder.start();
+                console.log("MediaRecorder started. State:", mediaRecorder.state);
+                statusMessage.textContent = 'RECORDING';
+                statusMessage.classList.add('recording'); // Add blinking class
+                startRecordTimer();
+
+                 // Automatically stop after duration
+                 setTimeout(() => {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        console.log("Recording duration reached. Stopping recorder.");
+                        mediaRecorder.stop();
+                        // The rest of the process continues in mediaRecorder.onstop
+                    }
+                 }, RECORD_DURATION_SECONDS * 1000);
+
+            } catch (err) {
+                console.error("Error accessing media devices:", err);
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    displayError('Microphone access denied. Please allow microphone access in your browser settings and refresh the page.');
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                     displayError('No microphone found. Please ensure a microphone is connected and enabled.');
+                } else {
+                    displayError(`Could not access microphone: ${err.name} - ${err.message}`);
+                }
+            }
+        }
+
+        function startRecordTimer() {
+             let timeLeft = RECORD_DURATION_SECONDS;
+            recordTimerDisplay.textContent = formatTime(timeLeft);
+
+            recordIntervalId = setInterval(() => {
+                timeLeft--;
+                recordTimerDisplay.textContent = formatTime(timeLeft);
+                // Timer now purely informational, stopping is handled by setTimeout in startRecordingProcess
+                if (timeLeft < 0) { // Safety check to clear interval if setTimeout fails
+                    clearInterval(recordIntervalId);
+                }
+            }, 1000);
+        }
+
+        // --- Event Listeners ---
+        startButton.addEventListener('click', () => {
+            userName = userNameInput.value.trim();
+            if (!userName) {
+                alert('Please enter your name.');
+                userNameInput.focus();
+                return;
+            }
+
+            // Disable button to prevent multiple starts
+            startButton.disabled = true;
+            userNameInput.disabled = true;
+
+            // Generate random number
+            randomNumber = Math.floor(Math.random() * 10) + 1;
+            randomNumberDisplay.textContent = randomNumber;
+
+            // Hide name section, show wait section
+            nameSection.style.display = 'none';
+            waitSection.style.display = 'block';
+
+            // Start the waiting timer
+            startWaitTimer();
+        });
+
+        // Initial setup check
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+             displayError('Your browser does not support the MediaRecorder API. Please use a modern browser like Chrome or Firefox.');
+        }
+
+    </script>
+</body>
+</html>

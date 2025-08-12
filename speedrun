@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speed-Run Tasks</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Optional: Add any custom styles here if you need to override Tailwind */
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col items-center justify-start pt-10">
+  <h1 class="text-4xl font-bold mb-8">Speed-Run Tasks</h1>
+
+  <div class="w-full max-w-2xl">
+    <div class="flex justify-between items-center mb-4 p-4 bg-gray-800 rounded-lg shadow-md">
+      <span class="text-2xl font-semibold" id="total-time">Total: 00:00.00</span>
+      <button
+        id="start-stop-button"
+        class="px-6 py-3 rounded-lg font-bold shadow-md transition-colors bg-green-600 hover:bg-green-700"
+      >
+        Start
+      </button>
+    </div>
+
+    <div class="mb-4 flex items-center">
+      <input
+        type="text"
+        id="new-task-name"
+        placeholder="Add a new task..."
+        class="text-gray-900 p-3 rounded-l-lg flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <button
+        id="add-task-button"
+        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        Add
+      </button>
+    </div>
+
+    <div id="task-list" class="space-y-2">
+      </div>
+  </div>
+
+  <script>
+    let tasks = [];
+    let isRunning = false;
+    let startTime = null;
+    let currentTime = 0;
+    let intervalId = null; // Keep intervalId as a regular variable
+
+    const newTaskNameInput = document.getElementById('new-task-name');
+    const addTaskButton = document.getElementById('add-task-button');
+    const startStopButton = document.getElementById('start-stop-button');
+    const taskList = document.getElementById('task-list');
+    const totalTimeDisplay = document.getElementById('total-time');
+
+    function formatTime(time) {
+      if (time === null) {
+        return '00:00.00';
+      }
+      const ms = time % 1000;
+      const totalSeconds = Math.floor(time / 1000);
+      const seconds = totalSeconds % 60;
+      const minutes = Math.floor(totalSeconds / 60);
+      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${Math.floor(ms / 10).toString().padStart(2, '0')}`;
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = ''; // Clear existing tasks
+      tasks.forEach(task => {
+        const taskElement = document.createElement('div');
+        taskElement.className = `flex justify-between items-center p-3 rounded-lg shadow-sm ${task.completed ? 'bg-green-800' : 'bg-gray-700'}`;
+        taskElement.innerHTML = `
+          <span class="text-lg ${task.completed ? 'line-through text-green-300' : ''}">${task.name}</span>
+          <div class="flex items-center space-x-4">
+            <span class="text-lg font-mono">${task.completed ? formatTime(task.splitTime) : '--:--.--'}</span>
+            ${!task.completed ? `
+              <button
+                class="complete-button px-4 py-2 rounded-md text-sm font-bold transition-colors ${isRunning ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-600 cursor-not-allowed'}"
+                data-task-id="${task.id}"
+                ${!isRunning ? 'disabled' : ''}
+              >
+                Done
+              </button>
+            ` : ''}
+          </div>
+        `;
+        taskList.appendChild(taskElement);
+      });
+
+      // Attach event listeners to the "Done" buttons
+      document.querySelectorAll('.complete-button').forEach(button => {
+        button.addEventListener('click', () => {
+          const taskId = button.dataset.taskId;
+          handleCompleteTask(taskId);
+        });
+      });
+    }
+
+    function handleAddTask() {
+      const taskName = newTaskNameInput.value.trim();
+      if (taskName) {
+        tasks.push({
+          id: Date.now().toString(),
+          name: taskName,
+          completed: false,
+          startTime: null,
+          endTime: null,
+          splitTime: null,
+        });
+        newTaskNameInput.value = '';
+        renderTasks();
+      }
+    }
+
+    function handleStartStop() {
+        if (!isRunning) {
+            startTime = Date.now();
+            currentTime = Date.now();
+            // Start the interval and store the ID
+            intervalId = setInterval(() => {
+                currentTime = Date.now();
+                updateTotalTime();
+            }, 10);
+            startStopButton.textContent = 'Stop';
+            startStopButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+            startStopButton.classList.add('bg-red-600', 'hover:bg-red-700');
+        } else {
+            // Clear the interval using the stored ID
+            clearInterval(intervalId);
+            intervalId = null; // Reset intervalId
+             tasks = tasks.map(task => ({
+              ...task,
+              splitTime: task.completed ? task.splitTime : null,
+            }));
+            startStopButton.textContent = 'Start';
+            startStopButton.classList.remove('bg-red-600', 'hover:bg-red-700');
+            startStopButton.classList.add('bg-green-600', 'hover:bg-green-700');
+            updateTotalTime();
+            renderTasks();
+        }
+        isRunning = !isRunning;
+        renderTasks();
+    }
+
+    function handleCompleteTask(id) {
+      const now = Date.now();
+      tasks = tasks.map(task => {
+        if (task.id === id) {
+          return {
+            ...task,
+            completed: true,
+            endTime: now,
+            splitTime: startTime ? now - startTime : 0,  // Use startTime
+          };
+        }
+        return task;
+      });
+      renderTasks();
+    }
+
+     function updateTotalTime() {
+        const totalTime = startTime && currentTime
+            ? currentTime - startTime
+            : tasks.reduce((acc, task) => acc + (task.splitTime || 0), 0);
+        totalTimeDisplay.textContent = `Total: ${formatTime(totalTime)}`;
+    }
+
+    // Event Listeners
+    addTaskButton.addEventListener('click', handleAddTask);
+    newTaskNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        handleAddTask();
+      }
+    });
+    startStopButton.addEventListener('click', handleStartStop);
+
+    updateTotalTime(); // Initial time update
+  </script>
+</body>
+</html>
