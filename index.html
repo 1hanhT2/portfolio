@@ -76,6 +76,31 @@
         .mobile-nav-links a:hover, .mobile-nav-links a:focus { background-color: var(--hover-bg-color); color: var(--header-text-color); }
         /* Main Content Container */
         .container { max-width: 1160px; margin: 60px auto; padding: 50px 60px; background-color: var(--container-bg-color); box-shadow: 0 10px 30px var(--shadow-color); border-radius: 10px; transition: background-color 0.5s ease, box-shadow 0.5s ease; position: relative; overflow: hidden; }
+        /* Hero Section Decorative Background */
+        #home {
+            position: relative;
+            overflow: hidden;
+        }
+        #home::before, #home::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.5;
+            z-index: -1;
+        }
+        #home::before {
+            background: var(--accent-color);
+            top: -80px;
+            left: -80px;
+        }
+        #home::after {
+            background: #38bdf8;
+            bottom: -80px;
+            right: -80px;
+        }
         /* Hero Emoji Animation */
         .hero-emoji { display: inline-block; /* Needed for transform */ animation: float 5s infinite ease-in-out; margin: 0 5px; }
         .hero-emoji:nth-child(2) { animation-delay: 0.5s; } /* Stagger animation */
@@ -244,7 +269,7 @@
             <p class="anim-fade-in text-[1.05rem] md:text-xl text-[var(--text-color)] max-w-[750px] mx-auto mb-10 font-[var(--font-body)]" style="transition-delay: 0.1s;">
                 A language & technology portfolio where words meet code.
             </p>
-            <a href="#portfolio" class="anim-fade-in inline-block px-6 py-3 md:px-8 md:py-4 rounded-full bg-[var(--accent-color)] text-white font-medium shadow hover:bg-[var(--accent-hover-color)] transition-colors" style="transition-delay: 0.2s;">
+            <a href="#portfolio" class="anim-fade-in inline-block px-6 py-3 md:px-8 md:py-4 rounded-full text-white font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all" style="transition-delay: 0.2s; background: linear-gradient(135deg, var(--accent-color), #38bdf8);">
                 Explore Projects <i class="fas fa-arrow-right"></i>
             </a>
         </section>
