@@ -1,0 +1,40 @@
+    <section id="integrations" class="section">
+      <h2>Integrations you use every day</h2>
+      <p class="lead">Friendly with your stack — design, docs, and communication.</p>
+      <div class="grid cols-4">
+        <div class="logo-card"><img alt="Google Drive" src="https://cdn.simpleicons.org/googledrive/1A73E8" /></div>
+        <div class="logo-card"><img alt="Figma" src="https://cdn.simpleicons.org/figma/0ACF83" /></div>
+        <div class="logo-card"><img alt="Slack" src="https://cdn.simpleicons.org/slack/611f69" /></div>
+        <div class="logo-card"><img alt="Gmail" src="https://cdn.simpleicons.org/gmail/ea4335" /></div>
+        <div class="logo-card"><img alt="Jira" src="https://cdn.simpleicons.org/jira/2684FF" /></div>
+        <div class="logo-card"><img alt="Notion" src="https://cdn.simpleicons.org/notion/000000" /></div>
+        <div class="logo-card"><img alt="Outlook" src="https://cdn.simpleicons.org/microsoftoutlook/0078D4" /></div>
+        <div class="logo-card"><img alt="Google Calendar" src="https://cdn.simpleicons.org/googlecalendar/4285F4" /></div>
+      </div>
+    </section>
+
+    <section id="testimonials" class="section">
+      <h2>People like you use this work</h2>
+      <p class="lead">Notes from collaborators, teachers, and teammates.</p>
+      <div class="grid cols-3">
+        <div class="card testimonial">
+          <img class="avatar" src="https://i.pravatar.cc/96?img=12" alt="Avatar" />
+          <div>
+            <p class="quote">“The tools transformed how we prep listening tests. Deadlines are now easy.”</p>
+            <div class="byline">John D. • Marketing Lead</div>
+          </div>
+        </div>
+        <div class="card testimonial">
+          <img class="avatar" src="https://i.pravatar.cc/96?img=22" alt="Avatar" />
+          <div>
+            <p class="quote">“Essential when teaching—track progress, share resources, and keep students engaged.”</p>
+            <div class="byline">Sarah W. • Teacher</div>
+          </div>
+        </div>
+        <div class="card testimonial">
+          <img class="avatar" src="https://i.pravatar.cc/96?img=31" alt="Avatar" />
+          <div>
+            <p class="quote">“Clear thinking and quick iterations. Exactly what you want on a project.”</p>
+            <div class="byline">Alex M. • Developer</div>
+          </div>
+        </div>

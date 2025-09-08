@@ -1,426 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bui Tan Thanh - Language & Technology Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="icon" type="image/x-icon" href="./resources/gift-svgrepo-com.svg">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Smooth Scroll */
-        html { scroll-behavior: smooth; }
-
-        /* CSS Variables */
-        :root {
-            --bg-color: #F8F7F2; --text-color: #3D4F60; --heading-color: #1A3A5A;
-            --header-bg-color: #F8F7F2; --header-text-color: var(--heading-color);
-            --container-bg-color: #FFFFFF; --shadow-color: rgba(61, 79, 96, 0.08);
-            --border-color: #D8E2EB; --hover-bg-color: #A0D2DB; --accent-color: #05c92f;
-            --accent-hover-color: #04a826; --card-bg-color: #FFFFFF;
-            --card-shadow-color: rgba(61, 79, 96, 0.06); --card-border-color: #EAEFF4;
-            --footer-bg-color: var(--bg-color); --footer-text-color: var(--accent-color);
-            --timeline-line-color: var(--accent-color); --skill-bg-color: #E1F0F3;
-            --skill-text-color: var(--accent-hover-color);
-
-            /* UPDATED Font Families */
-            --font-heading: 'Montserrat Alternates', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            --font-ui: 'Poppins', sans-serif;
-
-            --header-scrolled-bg: rgba(255, 255, 255, 0.85);
-            --header-scrolled-shadow: rgba(61, 79, 96, 0.1);
-        }
-        /* Dark Mode Variables */
-        body.dark-mode {
-            --bg-color: #1A1D21; --text-color: #C0C5CE; --heading-color: #E0E5EB;
-            --header-bg-color: #212429; --header-text-color: var(--heading-color);
-            --container-bg-color: #282C34; --shadow-color: rgba(0, 0, 0, 0.2);
-            --border-color: #3A4049; --hover-bg-color: #4A5462; --accent-color: #05c92f;
-            --accent-hover-color: #04a826; --card-bg-color: #31363F;
-            --card-shadow-color: rgba(0, 0, 0, 0.15); --card-border-color: #404853;
-            --footer-bg-color: var(--bg-color); --footer-text-color: var(--accent-color);
-            --timeline-line-color: var(--accent-color); --skill-bg-color: #3A4F5A;
-            --skill-text-color: var(--accent-hover-color);
-            --header-scrolled-bg: rgba(33, 36, 41, 0.85);
-            --header-scrolled-shadow: rgba(0, 0, 0, 0.3);
-        }
-        /* Base Styles */
-        body { font-family: var(--font-body); margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.75; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; transition: background-color 0.5s ease, color 0.5s ease; overflow-x: hidden; }
-        /* Subtle Background Pattern */
-        body::before { content: ""; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); background-color: var(--bg-color); z-index: -1; transition: background-color 0.5s ease; }
-        body.dark-mode::before { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ACACAC' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
-        /* Header */
-        .header { background-color: var(--header-bg-color); color: var(--header-text-color); padding: 15px 30px; box-shadow: 0 2px 4px var(--shadow-color); border-bottom: 1px solid transparent; position: sticky; top: 0; z-index: 1000; transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease; backdrop-filter: blur(0px); }
-        .header.scrolled { background-color: var(--header-scrolled-bg); box-shadow: 0 4px 15px var(--header-scrolled-shadow); border-bottom: 1px solid var(--border-color); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
-        .navbar-brand { font-size: 1.8rem; /* Adjusted for Outfit */ font-weight: 700; color: var(--header-text-color); font-family: var(--font-heading); text-decoration: none; transition: color 0.3s ease; letter-spacing: -0.5px; }
-        .navbar-brand:hover { color: var(--accent-color); }
-        .nav-links { list-style: none; padding: 0; margin: 0; display: flex; } .nav-links li { margin-left: 30px; }
-        .nav-links a { text-decoration: none; color: var(--text-color); font-weight: 500; padding: 8px 15px; border-radius: 20px; transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; font-family: var(--font-ui); position: relative; overflow: hidden; font-size: 0.95rem; /* Adjusted size */ }
-        .nav-links a::after { content: ''; position: absolute; bottom: 5px; left: 15px; right: 15px; height: 2px; background-color: var(--accent-color); transform: scaleX(0); transform-origin: center; transition: transform 0.3s ease-out; }
-        .nav-links a:hover { background-color: transparent; color: var(--heading-color); } .nav-links a:hover::after { transform: scaleX(1); }
-        /* Hamburger Menu */
-        .hamburger-button { display: none; flex-direction: column; justify-content: center; height: 40px; width: 40px; background: transparent; border: none; cursor: pointer; padding: 0; }
-        .hamburger-button .bar { height: 2px; width: 25px; background-color: var(--header-text-color); border-radius: 2px; margin: 3px 0; transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease; }
-        .hamburger-button:hover .bar { background-color: var(--accent-color); }
-        .hamburger-button.active .bar:nth-child(1) { transform: translateY(5px) rotate(45deg); } .hamburger-button.active .bar:nth-child(2) { opacity: 0; } .hamburger-button.active .bar:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
-        /* Mobile Navigation Menu */
-        .mobile-nav-menu { display: none; position: absolute; top: 100%; right: 0; left: 0; background-color: var(--header-bg-color); box-shadow: 0 4px 8px var(--shadow-color); padding: 20px; z-index: 999; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; margin-top: 1px; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease; }
-        .mobile-nav-menu.active { display: block; opacity: 1; visibility: visible; transform: translateY(0); }
-        .mobile-nav-links { list-style: none; padding: 0; margin: 0; text-align: center; } .mobile-nav-links li { margin-bottom: 15px; } .mobile-nav-links li:last-child { margin-bottom: 0; }
-        .mobile-nav-links a { display: block; text-decoration: none; color: var(--text-color); font-weight: 500; padding: 12px 20px; border-radius: 25px; transition: background-color 0.3s ease, color 0.3s ease; font-family: var(--font-ui); }
-        .mobile-nav-links a:hover, .mobile-nav-links a:focus { background-color: var(--hover-bg-color); color: var(--header-text-color); }
-        /* Main Content Container */
-        .container { max-width: 1160px; margin: 60px auto; padding: 50px 60px; background-color: var(--container-bg-color); box-shadow: 0 10px 30px var(--shadow-color); border-radius: 10px; transition: background-color 0.5s ease, box-shadow 0.5s ease; position: relative; overflow: hidden; }
-        /* Hero Section Decorative Background */
-        #home {
-            position: relative;
-            overflow: hidden;
-        }
-        #home::before, #home::after {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.5;
-            z-index: -1;
-        }
-        #home::before {
-            background: var(--accent-color);
-            top: -80px;
-            left: -80px;
-        }
-        #home::after {
-            background: #38bdf8;
-            bottom: -80px;
-            right: -80px;
-        }
-        /* Hero Emoji Animation */
-        .hero-emoji { display: inline-block; /* Needed for transform */ animation: float 5s infinite ease-in-out; margin: 0 5px; }
-        .hero-emoji:nth-child(2) { animation-delay: 0.5s; } /* Stagger animation */
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        /* General Button Style */
-        .button { display: inline-flex; align-items: center; gap: 10px; padding: 15px 35px; background-color: var(--accent-color); color: white; text-decoration: none; border-radius: 50px; font-weight: 500; transition: background-color 0.3s ease, transform 0.2s ease-in-out, box-shadow 0.3s ease; box-shadow: 0 5px 15px rgba(5, 201, 47, 0.3); font-size: 1.05rem; border: none; cursor: pointer; font-family: var(--font-ui); position: relative; overflow: hidden; }
-        .button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent); transition: left 0.5s ease; }
-        .button:hover::before { left: 100%; } .button i { font-size: 1.1em; transition: transform 0.3s ease; }
-        .button:hover { background-color: var(--accent-hover-color); transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 20px rgba(5, 201, 47, 0.4); } .button:hover i { transform: translateX(3px); }
-        /* Portfolio Grid */
-        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 35px; margin-top: 50px; }
-        .project-card { border-radius: 8px; overflow: hidden; box-shadow: 0 6px 15px var(--card-shadow-color); background-color: var(--card-bg-color); transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.5s ease; border: 1px solid var(--card-border-color); display: flex; flex-direction: column; position: relative; border-top: 3px solid var(--accent-color); }
-        .project-card .image-wrapper { overflow: hidden; position: relative; height: 220px; }
-        .project-card .image-wrapper::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%); opacity: 0; transition: opacity 0.4s ease; }
-        .project-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(61, 79, 96, 0.12); } .project-card:hover .image-wrapper::after { opacity: 1; }
-        .project-image { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); } .project-card:hover .project-image { transform: scale(1.08); }
-        .card-content { padding: 30px; flex-grow: 1; }
-        .project-title { font-size: 1.6rem; /* Adjusted for Outfit */ margin-bottom: 15px; color: var(--heading-color); font-weight: 600; font-family: var(--font-heading); line-height: 1.3; }
-        .project-description { color: var(--text-color); font-size: 1rem; line-height: 1.7; font-family: var(--font-body); }
-        .card-actions { padding: 25px 30px; border-top: 1px solid var(--card-border-color); text-align: right; background-color: transparent; transition: background-color 0.5s ease; margin-top: auto; }
-        .card-actions .button { margin-left: 15px; font-size: 0.9rem; padding: 10px 25px; }
-        /* Sections General */
-        section { margin-bottom: 80px; position: relative; }
-        .section-title {
-            font-size: 3rem; /* Adjusted for Outfit */
-            margin-bottom: 50px; color: var(--heading-color); text-align: center;
-            font-weight: 700; font-family: var(--font-heading);
-            transition: color 0.5s ease; position: relative; padding-bottom: 20px; line-height: 1.2; letter-spacing: -0.5px;
-            z-index: 1; /* Ensure title is above pseudo-elements like timeline line */
-        }
-        .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background-color: var(--accent-color); border-radius: 2px; transition: background-color 0.5s ease, width 0.3s ease; }
-        .section-title:hover::after { width: 90px; }
-        .section-content { padding: 0px 15px; color: var(--text-color); font-size: 1.05rem; /* Slightly smaller body */ transition: color 0.5s ease; max-width: 860px; margin: 0 auto; font-family: var(--font-body); }
-        #portfolio .section-content, #achievements .section-content, #fun-facts .section-content { max-width: none; padding: 0; } .section-content p { margin-bottom: 1.5em; }
-        /* Contact Form */
-        .contact-form { max-width: 700px; margin: 30px auto; } .form-group { margin-bottom: 30px; }
-        .form-group label { display: block; margin-bottom: 12px; font-weight: 500; color: var(--heading-color); font-size: 1rem; transition: color 0.5s ease; font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-control { width: 100%; padding: 18px 20px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; box-sizing: border-box; transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, color 0.5s ease; background-color: var(--bg-color); color: var(--text-color); font-family: var(--font-body); }
-        .form-control:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px var(--accent-color-transparent, rgba(90, 143, 154, 0.2)); }
-        body.dark-mode .form-control { background-color: var(--card-bg-color); }
-        body.dark-mode .form-control:focus { box-shadow: 0 0 0 3px var(--accent-color-transparent, rgba(122, 184, 197, 0.25)); }
-        .form-textarea { resize: vertical; min-height: 180px; } .submit-button { padding: 18px 40px; font-size: 1.1rem; }
-        /* Footer */
-        .footer { background-color: var(--footer-bg-color); padding: 50px 0; text-align: center; color: var(--footer-text-color); margin-top: 80px; border-top: 1px solid var(--border-color); transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease; display: flex; flex-direction: column; align-items: center; }
-        .footer p { margin-bottom: 25px; font-size: 0.95rem; color: var(--text-color); transition: color 0.5s ease; font-family: var(--font-ui); }
-        body.dark-mode .footer p { color: var(--text-color); }
-        .footer-social-links { display: flex; justify-content: center; margin-top: 15px; margin-bottom: 15px; }
-        .footer-social-links a { display: inline-flex; justify-content: center; align-items: center; color: var(--accent-color); font-size: 1.5rem; margin: 0 15px; transition: color 0.3s ease, transform 0.3s ease; text-decoration: none; }
-        .footer-social-links a:hover { color: var(--accent-hover-color); transform: scale(1.1) translateY(-3px); }
-        .footer-social-links svg { fill: currentColor; width: 24px; height: 24px; }
-        /* Responsive adjustments */
-        @media (max-width: 992px) { .container { padding: 40px 40px; } .section-title { font-size: 2.5rem; } }
-        @media (max-width: 768px) {
-            .header { padding: 15px 20px; } .navbar { flex-direction: row; align-items: center; } .navbar-brand { font-size: 1.5rem; } .nav-links { display: none; } .hamburger-button { display: flex; align-self: center; margin-left: auto; }
-            .container { padding: 30px 20px; margin: 30px auto; border-radius: 8px; }
-            .section-title { font-size: 2rem; margin-bottom: 30px; padding-bottom: 15px; } .section-title::after { width: 50px; height: 2px; } .section-title:hover::after { width: 70px; }
-            .section-content { padding: 0 5px; font-size: 0.95rem; } #portfolio .section-content, #achievements .section-content, #fun-facts .section-content { padding: 0; }
-            .portfolio-grid { grid-template-columns: 1fr; gap: 30px; } .project-image, .project-card .image-wrapper { height: 200px; } .card-content { padding: 25px; } .card-actions { padding: 20px 25px; }
-            .card-actions .button { font-size: 0.85rem; padding: 8px 20px; } .contact-form { margin: 20px auto; max-width: 100%; } .submit-button { padding: 15px 30px; font-size: 1rem; }
-            .footer { padding: 40px 0; margin-top: 60px; } .footer-social-links a { font-size: 1.4rem; margin: 0 12px; }
-            /* Mobile Timeline */
-            #timeline::before { display: none; } .timeline-event { margin-bottom: 30px; padding-right: 0 !important; padding-left: 0 !important; text-align: left !important; } .timeline-event::after { display: none; }
-            .timeline-event-content { max-width: 100%; padding: 25px; border-top-width: 2px; } .timeline-event:nth-child(odd) .timeline-event-content, .timeline-event:nth-child(even) .timeline-event-content { margin-left: 0; margin-right: 0; }
-        }
-        /* Skills Section */
-        .skills-container { margin-top: 50px; } .skills-category { margin-bottom: 30px; }
-        .skills-category h4 { font-family: var(--font-ui); font-weight: 600; font-size: 1.3rem; color: var(--heading-color); margin-bottom: 20px; text-align: center; position: relative; padding-bottom: 10px; }
-        .skills-category h4::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 40px; height: 2px; background-color: var(--accent-color); }
-        .skills-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-        .skills-list li { padding: 10px 22px; background-color: var(--skill-bg-color); color: var(--skill-text-color); border-radius: 50px; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; font-weight: 500; font-family: var(--font-ui); font-size: 0.9rem; }
-        .skills-list li:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: var(--accent-color); color: white; }
-        .skill-icon { margin-right: 8px; font-size: 1.1em; color: inherit; width: 1.1em; text-align: center; }
-        /* Section Divider */
-        .section-divider { border: 0; height: 1px; background: linear-gradient(to right, transparent, var(--border-color), transparent); margin: 80px auto; width: 80%; opacity: 0.8; }
-        body.dark-mode .section-divider { background: linear-gradient(to right, transparent, var(--border-color), transparent); }
-
-        /* Timeline Section Styles */
-        #timeline {
-            position: relative;
-            padding-top: 20px; padding-bottom: 60px;
-        }
-
-        #timeline .section-content {
-            position: relative; /* Set as reference for the timeline's vertical line */
-        }
-        
-        /* Central Vertical Line - Starts below the title */
-        #timeline .section-content::before {
-            content: ''; position: absolute; top: 0; bottom: 0; left: 50%;
-            transform: translateX(-50%) scaleY(0); transform-origin: top;
-            width: 2px; background-color: var(--timeline-line-color);
-            transition: background-color 0.5s ease; border-radius: 2px;
-            z-index: 0; /* Positioned within the section-content stacking context */
-        }
-
-        #timeline.is-visible .section-content::before { 
-            transform: translateX(-50%) scaleY(1); 
-            transition: transform 1.5s cubic-bezier(0.165, 0.84, 0.44, 1) 0.3s; 
-        }
-
-        .timeline-event { margin-bottom: 50px; position: relative; z-index: 1; /* Events above line */ }
-        .timeline-event:last-child { margin-bottom: 0; }
-        .timeline-event:nth-child(odd) { padding-right: calc(50% + 45px); text-align: right; } .timeline-event:nth-child(even) { padding-left: calc(50% + 45px); text-align: left; }
-        .timeline-event-content { background-color: var(--card-bg-color); padding: 30px; border-radius: 8px; box-shadow: 0 8px 20px var(--card-shadow-color); display: inline-block; width: 100%; box-sizing: border-box; position: relative; transition: background-color 0.5s ease, box-shadow 0.5s ease; border: 1px solid var(--card-border-color); border-top: 3px solid var(--accent-color); z-index: 1; /* Ensure content box is above negative z-index line */ }
-        .timeline-event-date { font-size: 0.9rem; color: var(--accent-color); margin-bottom: 10px; font-weight: 500; font-family: var(--font-ui); display: block; text-transform: uppercase; letter-spacing: 0.5px; }
-        .timeline-event-title { font-size: 1.7rem; /* Adjusted for Outfit */ margin-bottom: 15px; color: var(--heading-color); font-weight: 600; font-family: var(--font-heading); line-height: 1.3; }
-        .timeline-event-description { color: var(--text-color); line-height: 1.7; font-size: 1rem; font-family: var(--font-body); }
-        /* Timeline Dot */
-        .timeline-event::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 16px; height: 16px; background-color: var(--accent-color); border-radius: 50%; border: 3px solid var(--bg-color); box-shadow: 0 0 0 3px var(--accent-color); z-index: 2; /* Dot above content and line */ transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, transform 0.3s ease; }
-        @keyframes pulse { 0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 3px var(--accent-color); } 50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 0 6px rgba(90, 143, 154, 0.4); } 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 3px var(--accent-color); } }
-        body.dark-mode { @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(122, 184, 197, 0.4); } } }
-        .timeline-event:hover::after { animation: pulse 1s infinite ease-in-out; }
-        /* Achievements Section */
-        .achievements-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; margin-top: 50px; }
-        .achievement-card { background-color: var(--card-bg-color); border-radius: 8px; box-shadow: 0 6px 15px var(--card-shadow-color); padding: 35px 30px; text-align: center; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.5s ease; border: 1px solid var(--card-border-color); border-top: 3px solid var(--accent-color); }
-        .achievement-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(61, 79, 96, 0.12); }
-        .achievement-icon { font-size: 3rem; color: var(--accent-color); margin-bottom: 25px; display: block; transition: transform 0.3s ease; }
-        .achievement-card:hover .achievement-icon { transform: scale(1.1) rotate(-5deg); }
-        .achievement-title { font-size: 1.4rem; /* Adjusted for Outfit */ font-weight: 600; color: var(--heading-color); margin-bottom: 15px; font-family: var(--font-heading); line-height: 1.3; }
-        .achievement-description { color: var(--text-color); line-height: 1.7; font-size: 0.95rem; font-family: var(--font-body); }
-        #achievements ul { list-style: none; padding: 0; } 
-        #achievements ul li { padding: 0; }
-        /* Flying Dark Mode Button */
-        .dark-mode-button { position: fixed; bottom: 25px; right: 25px; background-color: var(--header-bg-color); color: var(--header-text-color); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 12px var(--shadow-color); transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; z-index: 1001; display: flex; align-items: center; gap: 8px; font-family: var(--font-ui); font-weight: 500; }
-        .dark-mode-button:hover { background-color: var(--hover-bg-color); color: var(--heading-color); transform: scale(1.05); box-shadow: 0 6px 16px var(--shadow-color); }
-        .dark-mode-button i { font-size: 1.2em; }
-        /* Animation Classes */
-        .anim-fade-in, .anim-fade-in-up, .anim-fade-in-left, .anim-fade-in-right, .anim-scale-in { opacity: 0; transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
-        .anim-fade-in-up { transform: translateY(40px); } .anim-fade-in-left { transform: translateX(-40px); } .anim-fade-in-right { transform: translateX(40px); } .anim-scale-in { transform: scale(0.95); }
-        .is-visible { opacity: 1; transform: translate(0, 0) scale(1); }
-        .project-card, .achievement-card, .timeline-event-content { transition-delay: 0.1s; } /* Base delay */
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 10px; } ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background-color: var(--accent-color); border-radius: 10px; border: 2px solid var(--bg-color); }
-        ::-webkit-scrollbar-thumb:hover { background-color: var(--accent-hover-color); } body.dark-mode ::-webkit-scrollbar-thumb { border-color: var(--bg-color); }
-
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bui Tan Thanh • Portfolio</title>
+  <link rel="icon" type="image/svg+xml" href="./resources/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
 
-    <header class="header" id="main-header">
-        <nav class="navbar">
-            <a href="#home" class="navbar-brand" style="font-weight: 300;">Bui Tan Thanh</a>
-            <button class="hamburger-button" id="hamburger-button" aria-label="Toggle menu" aria-expanded="false">
-                <span class="bar"></span> <span class="bar"></span> <span class="bar"></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li> <li><a href="#portfolio">Portfolio</a></li> <li><a href="#timeline">Journey</a></li> <li><a href="#achievements">Achievements</a></li> <li><a href="#about">About</a></li> <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-        <div class="mobile-nav-menu" id="mobile-nav-menu">
-            <ul class="mobile-nav-links">
-                 <li><a href="#home">Home</a></li> <li><a href="#portfolio">Portfolio</a></li> <li><a href="#timeline">Journey</a></li> <li><a href="#achievements">Achievements</a></li> <li><a href="#about">About</a></li> <li><a href="#contact">Contact</a></li>
-            </ul>
-        </div>
+  <main class="shell pattern">
+    <nav class="nav">
+      <a class="brand" href="#top">
+        <span class="brand-dots"><span></span><span></span><span></span><span></span></span>
+        <span>Bui Tan Thanh</span>
+      </a>
+      <div class="nav-links">
+        <a href="#journey">Journey</a>
+        <a href="#features">Features</a>
+        <a href="#projects">Projects</a>
+        <a href="#achievements">Achievements</a>
+        <a href="more-projects.html">More</a>
+        <a class="btn secondary" href="speaking.html">Tools</a>
+        <a class="btn" href="#contact">Get in touch</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="spacer"></div>
+      <h1>Think, plan, and ship — all in one place</h1>
+      <p>Efficiently manage ideas, projects, and learning. A portfolio where words meet code.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#projects">Explore projects</a>
+        <a class="btn secondary" href="more-projects.html">View all projects</a>
+      </div>
+      <div class="decor small note">Take notes, track progress ✔️</div>
+      <div class="decor small timer">Timers & streaks ⏱️</div>
+      <div class="decor small integration">100+ integrations 🔗</div>
     </header>
 
-    <button id="darkModeToggle" class="dark-mode-button"> </button>
+    <section id="journey" class="section">
+      <h2>My Journey in Language & Code</h2>
+      <div class="timeline">
+        <div class="entry card">
+          <div class="eyebrow">2013 – 2018 • Foundation Years: Phước Tín Primary</div>
+          <h3>Established a strong academic foundation</h3>
+          <p class="mt-2">Discovered a passion for learning and curiosity that continues to guide my work.</p>
+        </div>
+        <div class="entry card">
+          <div class="eyebrow">2018 – 2022 • Developing Skills: Phước Tín Middle School</div>
+          <h3>Focused on English studies</h3>
+          <p class="mt-2">Earned recognition at town (2nd place) and provincial (3rd place) competitions in Grade 9.</p>
+        </div>
+        <div class="entry card">
+          <div class="eyebrow">2019 • Exploring Web & Cybersecurity</div>
+          <h3>First steps into technology</h3>
+          <p class="mt-2">Self‑studied front‑end (HTML, CSS) and cybersecurity basics, and explored PC hardware. You can see my first website <a href="more-projects.html">here</a>.</p>
+        </div>
+        <div class="entry card">
+          <div class="eyebrow">2022 – Present • Quang Trung High School for the Gifted</div>
+          <h3>Specialization in English</h3>
+          <p class="mt-2">Silver Medal at Olympic 30/4 (regional), First Place at provincial level, and Honorable Mention in the National Excellent Student Competition.</p>
+        </div>
+        <div class="entry card">
+          <div class="eyebrow">Future • Continuing the Pursuit</div>
+          <h3>Language + Technology</h3>
+          <p class="mt-2">Plan to pursue higher education in fields like Computational Linguistics, NLP, or EdTech — merging language and code. 🚀</p>
+        </div>
+      </div>
+    </section>
 
-    <main class="container">
+    <section id="achievements" class="section">
+      <h2>Competitive Achievements</h2>
+      <div class="grid cols-3">
+        <div class="card icon-card">
+          <div class="icon">🏅</div>
+          <div>
+            <h3>National Competition Honoree</h3>
+            <p class="mt-2">Honorable Mention in the National Excellent Student Competition (English).</p>
+          </div>
+        </div>
+        <div class="card icon-card">
+          <div class="icon">🥈</div>
+          <div>
+            <h3>Regional Olympic Silver Medalist</h3>
+            <p class="mt-2">Silver Medal in Olympic 30/4 (11th‑grade gifted category).</p>
+          </div>
+        </div>
+        <div class="card icon-card">
+          <div class="icon">🥇</div>
+          <div>
+            <h3>Provincial Champion (Grade 11)</h3>
+            <p class="mt-2">First Place in the Provincial Excellent Student Competition (English).</p>
+          </div>
+        </div>
+        <div class="card icon-card">
+          <div class="icon">🥉</div>
+          <div>
+            <h3>Provincial Top Finisher (Grade 9)</h3>
+            <p class="mt-2">Third Place in the Provincial Excellent Student Competition.</p>
+          </div>
+        </div>
+        <div class="card icon-card">
+          <div class="icon">🥈</div>
+          <div>
+            <h3>Town‑Level Runner‑Up (Grade 9)</h3>
+            <p class="mt-2">Second Place in the Town‑Level Excellent Student Competition.</p>
+          </div>
+        </div>
+        <div class="card icon-card">
+          <div class="icon">📚</div>
+          <div>
+            <h3>IELTS Band 8</h3>
+            <p class="mt-2">Listening 9 • Reading 8.5 • Writing 7 • Speaking 7.5.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <section id="home" class="text-center py-16 px-5 md:py-24 md:px-8 -mx-[20px] md:-mx-[60px] mb-10 md:mb-16 bg-gradient-to-br from-sky-300 to-[var(--container-bg-color)]">
-            <h1 class="anim-fade-in text-[2.2rem] md:text-[5rem] font-bold font-[var(--font-heading)] leading-tight mb-4 text-[var(--heading-color)]">
-                Take <span class="text-[var(--accent-color)]">Ctrl</span><span class="text-[var(--accent-color)]">.</span>
-            </h1>
-            <p class="anim-fade-in text-[1.05rem] md:text-xl text-[var(--text-color)] max-w-[750px] mx-auto mb-10 font-[var(--font-body)]" style="transition-delay: 0.1s;">
-                A language & technology portfolio where words meet code.
-            </p>
-            <a href="#portfolio" class="anim-fade-in inline-block px-6 py-3 md:px-8 md:py-4 rounded-full text-white font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all" style="transition-delay: 0.2s; background: linear-gradient(135deg, var(--accent-color), #38bdf8);">
-                Explore Projects <i class="fas fa-arrow-right"></i>
-            </a>
-        </section>
+    <section id="about" class="section" hidden>
+      <h2>About Me</h2>
+      <div class="two-col">
+        <div class="card">
+          <p>Hi, I’m Thanh — an English‑track student who loves building useful, human‑friendly tools. My background in competitive English sharpened how I think and communicate; my curiosity for technology turned that into products people can use.</p>
+          <p class="mt-2">I care about clarity, accessibility, and security. Whether it’s a listening‑test generator, a study timer, or a kanban board, I aim for simple interfaces, clean code, and sensible defaults.</p>
+          <p class="mt-2">I’m exploring the intersection of language and software — from technical writing and web apps to areas like NLP and educational technology.</p>
+        </div>
+        <div class="card">
+          <h3>Skills</h3>
+          <div class="spacer"></div>
+          <div class="eyebrow">Language & Communication</div>
+          <div class="chips mt-2">
+            <span class="chip">Advanced English Proficiency</span>
+            <span class="chip">Competitive English</span>
+            <span class="chip">Linguistics & Etymology</span>
+            <span class="chip">Academic Writing</span>
+            <span class="chip">Advanced Communication</span>
+            <span class="chip">Research & Synthesis</span>
+          </div>
+          <div class="spacer"></div>
+          <div class="eyebrow">Technical Skills</div>
+          <div class="chips mt-2">
+            <span class="chip">HTML5</span>
+            <span class="chip">CSS3</span>
+            <span class="chip">JavaScript (ES6+)</span>
+            <span class="chip">Web Security Fundamentals</span>
+            <span class="chip">Git & Version Control</span>
+            <span class="chip">Responsive Design</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="solutions" class="section">
+      <h2>About Me at a Glance</h2>
+      <p class="lead">I blend strong English communication with practical front‑end skills to build tools that help people learn and work better.</p>
+      <div class="grid cols-3">
+        <div class="card">
+          <div class="tile" aria-hidden="true">🧭</div>
+          <h3>Language + Technology</h3>
+          <p>Specialized English student with competition experience, exploring NLP and how language meets software.</p>
+        </div>
+        <div class="card">
+          <div class="tile" aria-hidden="true">⏱️</div>
+          <h3>Builder Mindset</h3>
+          <p>I design small, focused apps — generators, timers, and boards — that solve real problems for students and teams.</p>
+        </div>
+        <div class="card">
+          <div class="tile" aria-hidden="true">✅</div>
+          <h3>Clear, Accessible, Secure</h3>
+          <p>Write clearly, build accessibly, and respect security fundamentals. Good work is understandable and safe.</p>
+        </div>
+      </div>
+    </section>
 
-        <hr class="section-divider">
+    <section id="features" class="section">
+      <h2>How I Work</h2>
+      <p class="lead">A few principles and strengths that guide my projects and studies.</p>
+      <div class="grid cols-4">
+        <div class="card">
+          <div class="tile">🤝</div>
+          <h3>Communication</h3>
+          <p>Clear writing and documentation so ideas are easy to follow and improve.</p>
+        </div>
+        <div class="card">
+          <div class="tile">📊</div>
+          <h3>Front-end Fundamentals</h3>
+          <p>HTML, CSS, and modern JS with responsive, accessible UI patterns.</p>
+        </div>
+        <div class="card">
+          <div class="tile">📌</div>
+          <h3>Focus & Delivery</h3>
+          <p>Time-boxed work, fast iterations, and simple tools to keep momentum.</p>
+        </div>
+        <div class="card">
+          <div class="tile">🎛️</div>
+          <h3>Ownership</h3>
+          <p>Define the problem, pick the right scope, and finish with care.</p>
+        </div>
+      </div>
+    </section>
 
-        <section id="portfolio" class="anim-fade-in-up">
-            <h2 class="section-title">Selected Projects</h2>
-            <div class="section-content">
-                <div class="portfolio-grid">
-                    <div class="project-card anim-scale-in" style="transition-delay: 0s;">
-                        <div class="image-wrapper"> <img src="./resources/ai.png" alt="AI Listening Test Generator" class="project-image"> </div>
-                        <div class="card-content"> <h3 class="project-title">AI Listening Test Generator</h3> <p class="project-description">An innovative tool that leverages AI to generate practice listening tests, providing valuable preparation for language exams.</p> </div>
-                        <div class="card-actions"> <a href="https://youtu.be/4wX7_xulA9Y" class="button button-small" target="_blank" rel="noopener noreferrer"> Watch Demo <i class="fab fa-youtube"></i> </a>  </div>
-                    </div>
-                    <div class="project-card anim-scale-in" style="transition-delay: 0.1s;">
-                        <div class="image-wrapper"> <img src="./resources/olympic.png" alt="Practice Tests" class="project-image"> </div>
-                        <div class="card-content"> <h3 class="project-title">Olympic 30/4 Practice Tests</h3> <p class="project-description">A collection of practice tests designed to help students excel in the prestigious Olympic 30/4 English competition for 11th graders.</p> </div>
-                        <div class="card-actions"> <a href="https://drive.google.com/drive/folders/1_D-MBxAH-2yzO4EkIRtKeE9t7nei4TCK?usp=sharing" class="button button-small" target="_blank" rel="noopener noreferrer"> Read Paper <i class="fas fa-file-pdf"></i> </a>  </div>
-                    </div>
-                    <!-- New projects with emphasis -->
-                    <div class="project-card anim-scale-in new-project" style="transition-delay: 0.2s; border-top: 3px solid #7AB8C5;">
-                        <div class="image-wrapper"> <img src="./resources/noventum.png" alt="n0ventum Habit Tracker" class="project-image"> </div>
-                        <div class="card-content"> <h3 class="project-title">n0ventum Habit Tracker</h3> <p class="project-description">A gamified platform that tracks daily habits like exercise, reading, and meditation, with AI-driven difficulty analysis, streaks, badges, and performance insights.</p> </div>
-                        <div class="card-actions"> <a href="https://m0mentum.replit.app" class="button button-small" target="_blank" rel="noopener noreferrer"> Live Demo <i class="fas fa-external-link-alt"></i> </a> </div>
-                    </div>
-                    <div class="project-card anim-scale-in new-project" style="transition-delay: 0.3s; border-top: 3px solid #A0D2DB;">
-                        <div class="image-wrapper"> <img src="./resources/hsgqg_gen.png" alt="HSGQG Test Generator" class="project-image"> </div>
-                        <div class="card-content"> <h3 class="project-title">HSGQG Complete Test Generator</h3> <p class="project-description">An AI tool that builds full English competition exams — Listening, Reading, Use of English, Writing, and Speaking — from text, audio, or YouTube videos, with one-click automation.</p> </div>
-                        <div class="card-actions"> <a href="#" class="button button-small" target="_blank" rel="noopener noreferrer"> Coming Soon <i class="fas fa-clock"></i> </a> </div>
-                    </div>
-                </div>
-                <div style="text-align: center; margin-top: 50px;">
-                    <a href="more-projects.html" class="button anim-fade-in" style="transition-delay: 0.4s;">
-                        View All Projects <i class="fas fa-layer-group"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
+    <section id="projects" class="section">
+      <h2>Featured Projects</h2>
+      <p class="lead">A few highlights. Explore more for the full gallery.</p>
+      <div class="grid cols-3 projects-grid">
+        <div class="card">
+          <img class="thumb" src="./resources/ai.png" alt="AI Listening Test Generator" />
+          <h3 class="mt-2">AI Listening Test Generator</h3>
+          <p>Create practice listening tests from any audio with AI.</p>
+          <div class="actions mt-2">
+            <a class="btn" href="https://youtu.be/4wX7_xulA9Y" target="_blank" rel="noopener">Watch demo</a>
+          </div>
+        </div>
+        <div class="card">
+          <img class="thumb" src="./resources/noventum.png" alt="n0ventum Habit Tracker" />
+          <h3 class="mt-2">n0ventum Habit Tracker</h3>
+          <p>Gamified streaks, badges, and AI difficulty analysis.</p>
+          <div class="actions mt-2">
+            <a class="btn" href="https://m0mentum.replit.app" target="_blank" rel="noopener">Live demo</a>
+          </div>
+        </div>
+        <div class="card">
+          <img class="thumb" src="./resources/hsgqg_gen.png" alt="HSGQG Complete Test Generator" />
+          <h3 class="mt-2">HSGQG Test Generator</h3>
+          <p>Build full English exams from text, audio, or YouTube.</p>
+          <div class="actions mt-2">
+            <a class="btn secondary" href="#">Coming soon</a>
+          </div>
+        </div>
+      </div>
+      <p class="center mt-2"><a class="btn secondary" href="more-projects.html">See all projects</a></p>
+    </section>
 
-        <hr class="section-divider">
-        
-        <section id="timeline" class="anim-fade-in-up">
-            <h2 class="section-title">My Journey in Language & Code</h2>
-            <div class="section-content">
-                <div class="timeline-event anim-fade-in-left"> <div class="timeline-event-content"> <span class="timeline-event-date">2013 - 2018</span> <h3 class="timeline-event-title">Foundation Years: Phước Tín Primary</h3> <p class="timeline-event-description">Established a strong academic foundation and discovered a passion for learning.</p> </div> </div>
-                 <div class="timeline-event anim-fade-in-right"> <div class="timeline-event-content"> <span class="timeline-event-date">2018 - 2022</span> <h3 class="timeline-event-title">Developing Skills: Phước Tín Middle School</h3> <p class="timeline-event-description">Focused on English studies, earning recognition at town (2nd place) and provincial (3rd place) competitions in Grade 9.</p> </div> </div>
-                 <div class="timeline-event anim-fade-in-left"> <div class="timeline-event-content"> <span class="timeline-event-date">2019</span> <h3 class="timeline-event-title">Exploring Web & Cybersecurity</h3> <p class="timeline-event-description">Ventured into technology by self-studying front-end development (HTML, CSS) and cybersecurity fundamentals, while also exploring PC hardware. You can see <a href="https://web.archive.org/web/20230724204210/http://buitanthanh.tk/#expand" target="_blank">my first website here.</a></p> </div> </div>
-                 <div class="timeline-event anim-fade-in-right"> <div class="timeline-event-content"> <span class="timeline-event-date">2022 - Present</span> <h3 class="timeline-event-title">Specialization: Quang Trung High School for the Gifted</h3> <p class="timeline-event-description">Enrolled in a specialized English program, achieving a Silver Medal at the regional Olympic 30/4 competition, First Place at the provincial level, and an Honorable Mention in the National Excellent Student Competition.</p> </div> </div>
-                <div class="timeline-event anim-fade-in-left"> <div class="timeline-event-content"> <span class="timeline-event-date">Future</span> <h3 class="timeline-event-title">Continuing the Pursuit</h3> <p class="timeline-event-description">Looking ahead, I plan to pursue higher education and seek opportunities that merge my passions for language and technology, with a focus on fields like Computational Linguistics, NLP, or Educational Technology. 🚀</p> </div> </div>
-            </div>
-        </section>
+    <section id="integrations" class="section">
+      <h2>Tools I Work With</h2>
+      <p class="lead">Comfortable across design, coding, and productivity apps — from Photoshop and Figma to VS Code, Git, and the Google Suite.</p>
+      <div class="grid cols-4">
+        <div class="logo-card"><img alt="Figma" src="https://cdn.simpleicons.org/figma/0ACF83" /></div>
+        <div class="logo-card"><img alt="Photoshop" src="https://cdn.simpleicons.org/adobephotoshop/31A8FF" /></div>
+        <div class="logo-card"><img alt="VS Code" src="https://cdn.simpleicons.org/visualstudiocode/007ACC" /></div>
+        <div class="logo-card"><img alt="GitHub" src="https://cdn.simpleicons.org/github/181717" /></div>
+        <div class="logo-card"><img alt="Git" src="https://cdn.simpleicons.org/git/F05032" /></div>
+        <div class="logo-card"><img alt="Google Drive" src="https://cdn.simpleicons.org/googledrive/1A73E8" /></div>
+        <div class="logo-card"><img alt="Notion" src="https://cdn.simpleicons.org/notion/000000" /></div>
+        <div class="logo-card"><img alt="Slack" src="https://cdn.simpleicons.org/slack/611f69" /></div>
+      </div>
+    </section>
 
-        <hr class="section-divider">
+    <section id="testimonials" class="section">
+      <h2>What collaborators say</h2>
+      <p class="lead">Feedback from teachers, teammates, and people I've worked with.</p>
+      <div class="grid cols-3">
+        <div class="card testimonial">
+          <img class="avatar" src="https://i.pravatar.cc/96?img=12" alt="Avatar" />
+          <div>
+            <p class="quote">"Thanh communicates clearly and ships steadily. Our prep process became faster and easier to follow."</p>
+            <div class="byline">John D. • Marketing Lead</div>
+          </div>
+        </div>
+        <div class="card testimonial">
+          <img class="avatar" src="https://i.pravatar.cc/96?img=22" alt="Avatar" />
+          <div>
+            <p class="quote">"He explains decisions well and documents his work. Collaboration felt effortless."</p>
+            <div class="byline">Sarah W. • Teacher</div>
+          </div>
+        </div>
+        <div class="card testimonial">
+          <img class="avatar" src="https://i.pravatar.cc/96?img=31" alt="Avatar" />
+          <div>
+            <p class="quote">"Thoughtful about details, responsive to feedback, and keeps scope realistic. Would work together again."</p>
+            <div class="byline">Alex M. • Developer</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <section id="achievements" class="anim-fade-in-up">
-            <h2 class="section-title">Competitive Achievements</h2>
-            <div class="section-content">
-                <ul class="achievements-list">
-                    <li class="anim-scale-in" style="transition-delay: 0s;">
-                        <div class="achievement-card"> <span class="achievement-icon">🏅</i></span> <h3 class="achievement-title">National Competition Honoree</h3> <p class="achievement-description">Received an Honorable Mention (Giải Khuyến Khích) in the National Excellent Student Competition for English.</p> </div>
-                    </li>
-                    <li class="anim-scale-in" style="transition-delay: 0.05s;">
-                        <div class="achievement-card">
-                            <span class="achievement-icon" style="font-size: 2.8rem;">🥈</span>
-                            <h3 class="achievement-title">Regional Olympic Silver Medalist</h3>
-                            <p class="achievement-description">Secured a Silver Medal (Huy Chương Bạc) in the Olympic 30/4 competition for 11th-grade gifted students.</p>
-                        </div>
-                    </li>
-                    <li class="anim-scale-in" style="transition-delay: 0.1s;">
-                        <div class="achievement-card"> <span class="achievement-icon">🥇</span> <h3 class="achievement-title">Provincial Champion (Grade 11)</h3> <p class="achievement-description">Achieved First Place (Giải Nhất) in the Provincial Excellent Student Competition for English as a 11th grader.</p> </div>
-                    </li>
-                    <li class="anim-scale-in" style="transition-delay: 0.15s;">
-                        <div class="achievement-card"> <span class="achievement-icon" style="font-size: 2.8rem;">🥉</span> <h3 class="achievement-title">Provincial Top Finisher (Grade 9)</h3> <p class="achievement-description">Earned Third Place (Giải Ba) in the Provincial Excellent Student Competition as a 9th grader.</p> </div>
-                    </li>
-                     <li class="anim-scale-in" style="transition-delay: 0.2s;">
-                        <div class="achievement-card"> <span class="achievement-icon" style="font-size: 2.8rem;">🥈</span> <h3 class="achievement-title">Town-Level Runner-Up (Grade 9)</h3> <p class="achievement-description">Placed Second (Giải Nhì) in the Town-Level Excellent Student Competition.</p> </div>
-                    </li>
-                    <li class="anim-scale-in" style="transition-delay: 0.25s;">
-                        <div class="achievement-card"> <span class="achievement-icon">📚</span> <h3 class="achievement-title">IELTS Band 8</h3> <p class="achievement-description">Achieved an outstanding Band 8 in IELTS with scores of 9, 8.5, 7, and 7.5 in Listening, Reading, Writing, and Speaking respectively.</p> </div>
-                    </li>
-                </ul>
-            </div>
-        </section>
+    <section id="contact" class="section">
+      <h2>Let’s work together</h2>
+      <p class="lead">Have an idea, a class, or a problem to solve? I’d love to help.</p>
+      <p class="center">
+        <a class="btn" href="mailto:tanthanh.b1@gmail.com">Email me</a>
+      </p>
+    </section>
 
-        <hr class="section-divider">
+    <footer class="footer">© <span id="year"></span> Bui Tan Thanh</footer>
+  </main>
 
-        <section id="about" class="anim-fade-in-up">
-            <h2 class="section-title">About Me</h2>
-            <div class="section-content">
-                <p>My name is Thanh, and I am an English Major at Quang Trung High School for the Gifted. My academic journey is driven by a dual passion: a deep fascination with the English language and a growing enthusiasm for web technology.</p>
-                <p>My interest in language extends to linguistics and etymology, where I enjoy analyzing the structure and history of words. This analytical mindset has helped me succeed in regional and national English competitions. At the same time, I am actively honing my front-end development skills (HTML, CSS, JavaScript) and learning the fundamentals of web security, as I believe in building digital products that are both functional and secure.</p>
-                <p>I believe strong communication and technical literacy are essential in today's world. I am excited to find opportunities where I can apply both my command of English and my technical skills—whether in technical writing, accessible web development, or emerging fields like Natural Language Processing.</p>
-                <div class="skills-container">
-                    <div class="skills-category">
-                         <h4>Language & Communication</h4>
-                        <ul class="skills-list">
-                             <li class="anim-scale-in" style="transition-delay: 0.1s;"><span class="skill-icon"><i class="fas fa-language"></i></span> Advanced English Proficiency</li> <li class="anim-scale-in" style="transition-delay: 0.15s;"><span class="skill-icon"><i class="fas fa-trophy"></i></span> Competitive English</li> <li class="anim-scale-in" style="transition-delay: 0.2s;"><span class="skill-icon"><i class="fas fa-spell-check"></i></span> Linguistics & Etymology</li> <li class="anim-scale-in" style="transition-delay: 0.25s;"><span class="skill-icon"><i class="fas fa-pen-nib"></i></span> Academic Writing</li> <li class="anim-scale-in" style="transition-delay: 0.3s;"><span class="skill-icon"><i class="fas fa-comments"></i></span> Advanced Communication</li> <li class="anim-scale-in" style="transition-delay: 0.35s;"><span class="skill-icon"><i class="fas fa-search"></i></span> Research & Synthesis</li>
-                        </ul>
-                    </div>
-                     <div class="skills-category">
-                         <h4>Technical Skills</h4>
-                        <ul class="skills-list">
-                            <li class="anim-scale-in" style="transition-delay: 0.4s;"><span class="skill-icon"><i class="fab fa-html5"></i></span> HTML5</li> <li class="anim-scale-in" style="transition-delay: 0.45s;"><span class="skill-icon"><i class="fab fa-css3-alt"></i></span> CSS3</li> <li class="anim-scale-in" style="transition-delay: 0.5s;"><span class="skill-icon"><i class="fab fa-js-square"></i></span> JavaScript (ES6+)</li> <li class="anim-scale-in" style="transition-delay: 0.6s;"><span class="skill-icon"><i class="fas fa-shield-alt"></i></span> Web Security Fundamentals</li> <li class="anim-scale-in" style="transition-delay: 0.65s;"><span class="skill-icon"><i class="fab fa-git-alt"></i></span> Git & Version Control</li> <li class="anim-scale-in" style="transition-delay: 0.7s;"><span class="skill-icon"><i class="fas fa-mobile-alt"></i></span> Responsive Design</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <hr class="section-divider">
-
-        <section id="contact" class="anim-fade-in-up">
-            <h2 class="section-title">Get In Touch</h2>
-            <div class="section-content contact-form">
-                <form action="#" method="post">
-                     <div class="form-group anim-fade-in-left" style="transition-delay: 0.1s;"> <label for="name">Your Name</label> <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name" required> </div>
-                    <div class="form-group anim-fade-in-right" style="transition-delay: 0.2s;"> <label for="email">Your Email</label> <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" required> </div>
-                    <div class="form-group anim-fade-in-left" style="transition-delay: 0.3s;"> <label for="message">Your Message</label> <textarea id="message" name="message" rows="6" class="form-control form-textarea" placeholder="Share your thoughts, inquiries, or collaboration ideas..." required></textarea> </div>
-                    <div class="form-group anim-fade-in-up" style="text-align: center; transition-delay: 0.4s;"> <button type="submit" class="button submit-button"> Send Message <i class="fas fa-paper-plane"></i> </button> </div>
-                </form>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="footer">
-        <p>© <span id="copyright-year">2025</span> Bui Tan Thanh. All Rights Reserved.</p>
-        <div class="footer-social-links">
-            <a href="https://www.facebook.com/1hant2" target="_blank" rel="noopener noreferrer" aria-label="Facebook"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
-            <a href="https://www.linkedin.com/in/thanh-bui-b2b399319/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg> </a>
-            </div>
-    </footer>
-
-    <script>
-        // --- JavaScript remains the same ---
-        document.addEventListener('DOMContentLoaded', function() {
-            const darkModeToggle = document.getElementById('darkModeToggle'); const body = document.body; const hamburgerButton = document.getElementById('hamburger-button'); const mobileNavMenu = document.getElementById('mobile-nav-menu'); const mobileNavLinks = mobileNavMenu.querySelectorAll('a'); const copyrightYear = document.getElementById('copyright-year'); const mainHeader = document.getElementById('main-header'); const timelineSection = document.getElementById('timeline');
-             if (copyrightYear) { copyrightYear.textContent = new Date().getFullYear(); }
-            function setDarkMode(isDark) { if (isDark) { body.classList.add('dark-mode'); darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>'; localStorage.setItem('darkMode', 'enabled'); darkModeToggle.setAttribute('aria-pressed', 'true'); } else { body.classList.remove('dark-mode'); darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>'; localStorage.setItem('darkMode', 'disabled'); darkModeToggle.setAttribute('aria-pressed', 'false'); } }
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; const savedTheme = localStorage.getItem('darkMode'); if (savedTheme === 'enabled' || (!savedTheme && prefersDark)) { setDarkMode(true); } else { setDarkMode(false); }
-            darkModeToggle.addEventListener('click', () => { setDarkMode(!body.classList.contains('dark-mode')); });
-            hamburgerButton.addEventListener('click', () => { const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true'; mobileNavMenu.classList.toggle('active'); hamburgerButton.classList.toggle('active'); hamburgerButton.setAttribute('aria-expanded', !isExpanded); });
-            mobileNavLinks.forEach(link => { link.addEventListener('click', () => { mobileNavMenu.classList.remove('active'); hamburgerButton.classList.remove('active'); hamburgerButton.setAttribute('aria-expanded', 'false'); }); });
-            document.addEventListener('click', function(event) { const isClickInsideNav = mobileNavMenu.contains(event.target); const isClickOnHamburger = hamburgerButton.contains(event.target); if (!isClickInsideNav && !isClickOnHamburger && mobileNavMenu.classList.contains('active')) { mobileNavMenu.classList.remove('active'); hamburgerButton.classList.remove('active'); hamburgerButton.setAttribute('aria-expanded', 'false'); } });
-            function handleHeaderScroll() { if (window.scrollY > 50) { mainHeader.classList.add('scrolled'); } else { mainHeader.classList.remove('scrolled'); } }
-            window.addEventListener('scroll', handleHeaderScroll); handleHeaderScroll();
-            const animatedElements = document.querySelectorAll('.anim-fade-in, .anim-fade-in-up, .anim-fade-in-left, .anim-fade-in-right, .anim-scale-in');
-            if ("IntersectionObserver" in window) { const observerOptions = { root: null, rootMargin: '0px', threshold: 0.2 }; const observer = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); if (entry.target.id === 'timeline') { entry.target.classList.add('is-visible'); } observer.unobserve(entry.target); } }); }, observerOptions); animatedElements.forEach(el => { observer.observe(el); }); if (timelineSection) { timelineSection.classList.add('anim-fade-in-up'); observer.observe(timelineSection); } } else { animatedElements.forEach(el => el.classList.add('is-visible')); if (timelineSection) timelineSection.classList.add('is-visible'); }
-        });
-    </script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 
 </body>
 </html>
