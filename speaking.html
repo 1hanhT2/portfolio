@@ -1,275 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Recorder</title>
-    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Speaking Practice • Bui Tan Thanh</title>
+    <link rel="icon" type="image/svg+xml" href="./resources/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <style>
+        /* --- Base / tokens from main portfolio --- */
         :root {
-            --bg-color: #f0f4f8;
-            --text-color: #333;
-            --container-bg: #ffffff;
-            --container-shadow: rgba(0, 0, 0, 0.1);
-            --section-bg: #f9f9f9;
-            --section-border: #e0e0e0;
-            --button-bg: #007bff;
-            --button-hover: #0056b3;
-            --button-disabled: #cccccc;
-            --download-bg: #28a745;
-            --download-hover: #218838;
-            --recording-color: #d9534f;
-            --error-color: #dc3545;
-            --input-border: #ccc;
-            --input-bg: #ffffff;
-            --label-color: #555;
-            --header-color: #0056b3;
-            --link-color: #007bff;
-            --link-hover: #0056b3;
+            --bg: #0b0d12;
+            --surface: #11161d;
+            --surface-2: #0f141a;
+            --text: #e5ecf5;
+            --muted: #9fb0c3;
+            --line: #263243;
+            --accent: #7c5cff;
+            --accent-2: #00d4ff;
+            --ok: #3ae374;
+            --warn: #f5a524;
+            --danger: #ff5470;
+            --radius: 16px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, .35), 0 4px 8px rgba(0, 0, 0, .25);
         }
 
-        body.dark-mode {
-            --bg-color: #1a1d21;
-            --text-color: #e0e5eb;
-            --container-bg: #282c34;
-            --container-shadow: rgba(0, 0, 0, 0.3);
-            --section-bg: #31363f;
-            --section-border: #404853;
-            --button-bg: #7ab8c5;
-            --button-hover: #a0d2db;
-            --button-disabled: #4a5462;
-            --download-bg: #28a745;
-            --download-hover: #218838;
-            --recording-color: #ff6b6b;
-            --error-color: #ff7878;
-            --input-border: #4a5462;
-            --input-bg: #31363f;
-            --label-color: #c0c5ce;
-            --header-color: #7ab8c5;
-            --link-color: #7ab8c5;
-            --link-hover: #a0d2db;
-        }
-
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.6;
+            letter-spacing: 0.2px;
+            overflow-x: hidden;
+        }
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        img { max-width: 100%; display: block; }
+        a { color: inherit; text-decoration: none; }
+        .center { text-align: center; }
+        .lead { color: var(--muted); font-size: 1.05rem; }
+        .mt-2 { margin-top: .75rem; }
+
+        /* --- Background Effects --- */
+        .bg-wrap {
+            position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden;
+            background: radial-gradient(1200px 700px at 10% -10%, rgba(124, 92, 255, .35), transparent 60%), radial-gradient(900px 600px at 85% 20%, rgba(0, 212, 255, .25), transparent 60%), radial-gradient(900px 700px at 50% 110%, rgba(255, 84, 112, .18), transparent 60%);
+            filter: saturate(110%);
+        }
+        .bg-wrap::before {
+            content: ""; position: absolute; inset: 0;
+            background-image: radial-gradient(1px 1px at 15px 25px, white, transparent), radial-gradient(1px 1px at 75px 95px, white, transparent), radial-gradient(1px 1px at 135px 165px, white, transparent), radial-gradient(1px 1px at 45px 125px, white, transparent), radial-gradient(1px 1px at 185px 55px, white, transparent);
+            background-size: 200px 200px; opacity: 0.3;
+        }
+        .stars { position: absolute; inset: -10vh -10vw; background: transparent; }
+        .stars::before, .stars::after { content: ""; position: absolute; inset: 0; background-repeat: repeat; background-size: 300px 300px; opacity: .35; }
+        .stars::before { background-image: radial-gradient(1px 1px at 20px 30px, #bbd1ff 50%, transparent 51%), radial-gradient(1px 1px at 140px 180px, #9bc9ff 50%, transparent 51%), radial-gradient(1px 1px at 240px 80px, #d6e2ff 50%, transparent 51%); }
+        .stars::after { background-image: radial-gradient(1px 1px at 70px 60px, #cde0ff 50%, transparent 51%), radial-gradient(1px 1px at 200px 200px, #c3d9ff 50%, transparent 51%); opacity: .2; }
+
+        /* --- Layout & Nav --- */
+        .shell { width: min(1160px, 92vw); margin-inline: auto; }
+        .nav {
+            position: sticky; top: 14px; z-index: 50; display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; padding: 10px 14px; border-radius: 999px; backdrop-filter: blur(10px);
+            background: color-mix(in oklab, var(--surface) 88%, transparent); box-shadow: var(--shadow);
+            border: 1px solid color-mix(in oklab, var(--line) 80%, transparent); margin-bottom: 40px;
+        }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+        .brand-dots { display: inline-flex; gap: 4px; }
+        .brand-dots span { width: 8px; height: 8px; border-radius: 999px; display: block; background: linear-gradient(135deg, var(--accent), var(--accent-2)); filter: drop-shadow(0 0 6px rgba(124, 92, 255, .6)); }
+        .nav-links { display: flex; align-items: center; gap: 8px; }
+        .nav a { padding: 8px 12px; border-radius: 10px; color: var(--muted); }
+        .nav a:hover { color: var(--text); background: linear-gradient(135deg, rgba(124, 92, 255, .12), rgba(0, 212, 255, .12)); }
+        
+        /* --- Buttons & Cards --- */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px;
+            border-radius: 12px; font-weight: 600; border: 1px solid transparent;
+            background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, var(--accent), var(--accent-2)) border-box;
+            color: var(--text);
+            box-shadow: inset 0 -1px 0 rgba(255, 255, 255, .05), 0 6px 18px rgba(124, 92, 255, .25);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: inset 0 -1px 0 rgba(255, 255, 255, .06), 0 10px 26px rgba(124, 92, 255, .33); }
+        .btn.secondary { background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, #304055, #2b3240) border-box; }
+        .btn:disabled { background: var(--surface-2); border-color: var(--line); color: var(--muted); cursor: not-allowed; box-shadow: none; transform: none; }
+        
+        .card {
+            position: relative;
+            background: linear-gradient(180deg, color-mix(in oklab, var(--surface) 92%, transparent), color-mix(in oklab, var(--surface-2) 92%, transparent));
+            border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow);
             text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
-
-        .container {
-            background-color: var(--container-bg);
-            padding: 30px 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px var(--container-shadow);
-            width: 100%;
-            max-width: 500px;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        
+        /* --- Audio Recorder Styles --- */
+        .app-container {
+            max-width: 550px;
+            margin: 40px auto;
         }
-
-        h1 {
-            color: var(--header-color);
-            margin-bottom: 25px;
-            transition: color 0.3s ease;
+        .app-container h1 {
+            font-size: clamp(1.6rem, 2.6vw, 2rem);
+            background: linear-gradient(90deg, var(--text), #c7d2fe 30%, #a5b4fc 60%);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
         }
-
-        /* Sections for controlling visibility */
-        #name-section,
-        #wait-section,
-        #record-section,
-        #download-section,
-        #error-section {
-            margin-top: 20px;
+        .app-container h2 {
+            margin-top: 0;
+            color: var(--text);
+        }
+        .app-container p {
+            color: var(--muted);
+            margin: 8px 0 16px;
+        }
+        .app-section {
             padding: 15px;
-            border: 1px solid var(--section-border);
-            border-radius: 5px;
-            background-color: var(--section-bg);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            border-radius: var(--radius);
         }
-
-        /* Initially hide sections */
-        #wait-section,
-        #record-section,
-        #download-section,
-        #error-section {
-            display: none;
+        #name-section, #wait-section, #record-section, #download-section, #error-section {
+            display: none; /* Hide all by default, JS will manage visibility */
         }
-
+        #name-section.active {
+            display: block;
+        }
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: bold;
-            color: var(--label-color);
-            transition: color 0.3s ease;
+            font-weight: 600;
+            color: var(--muted);
         }
-
         input[type="text"] {
-            padding: 10px;
-            border: 1px solid var(--input-border);
-            border-radius: 4px;
-            width: calc(100% - 24px); /* Account for padding */
-            margin-bottom: 15px;
-            font-size: 1rem;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            width: 100%;
+            color: var(--text);
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 10px 12px;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease;
+            font-family: inherit;
+            font-size: inherit;
+            margin-bottom: 16px;
         }
-
-        button {
-            background-color: var(--button-bg);
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
+        input[type="text"]:focus-visible {
+            box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 60%, transparent);
+            border-color: color-mix(in oklab, var(--accent) 60%, var(--line));
         }
-
-        button:hover {
-            background-color: var(--button-hover);
+        .timer-display, #random-number-display {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-2);
+            margin: 12px 0;
         }
-
-        button:disabled {
-            background-color: var(--button-disabled);
-            cursor: not-allowed;
-        }
-
-        #random-number-display,
-        #wait-timer-display,
-        #record-timer-display,
-        #status-message {
-            font-size: 1.1rem;
-            margin-top: 10px;
-            color: var(--header-color);
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
         #status-message.recording {
-             color: var(--recording-color); /* Red for recording */
-             animation: blink 1s linear infinite;
+            color: var(--danger);
+            animation: blink 1.2s ease-in-out infinite;
         }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        #download-link {
-            display: block; /* Make it block for better spacing */
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: var(--download-bg);
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        #download-link:hover {
-            background-color: var(--download-hover);
-        }
-
-        #error-message {
-            color: var(--error-color);
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        /* Dark mode toggle button */
-        .dark-mode-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--button-bg);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            box-shadow: 0 2px 10px var(--container-shadow);
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            z-index: 1000;
-        }
-
-        .dark-mode-toggle:hover {
-            background-color: var(--button-hover);
-            transform: scale(1.1);
-        }
-
-        body.dark-mode .dark-mode-toggle {
-            background-color: #7ab8c5;
-        }
-
-        body.dark-mode .dark-mode-toggle:hover {
-            background-color: #a0d2db;
-        }
-
+        /* --- Footer & Cursor --- */
+        .footer { color: var(--muted); padding: 40px 0 70px; text-align: center; }
+        .cursor-blob { position: fixed; top: 0; left: 0; width: 260px; height: 260px; border-radius: 50%; pointer-events: none; z-index: -1; background: radial-gradient(closest-side, rgba(124, 92, 255, .22), rgba(0, 212, 255, .12), transparent 60%); filter: blur(30px); transform: translate(-50%, -50%); mix-blend-mode: screen; opacity: .7; }
+        @media (max-width: 900px), (pointer: coarse) { .cursor-blob { display: none; } }
     </style>
 </head>
 <body>
-    <button class="dark-mode-toggle" id="darkModeToggle">🌙</button>
-    
-    <div class="container">
-        <h1>Audio Recording Task</h1>
-
-        <div id="name-section">
-            <label for="user-name">Please enter your name:</label>
-            <input type="text" id="user-name" name="user-name" placeholder="Your Name">
-            <button id="start-button">Start Process</button>
-        </div>
-
-        <div id="wait-section">
-            <h2>Get Ready!</h2>
-            <p>Your number is: <span id="random-number-display"></span></p>
-            <p>Please wait, recording will start in:</p>
-            <div id="wait-timer-display">--:--</div>
-            <p id="wait-info">(Microphone access will be requested after this timer)</p>
-        </div>
-
-        <div id="record-section">
-            <h2>Recording</h2>
-            <p id="status-message">Initializing...</p>
-            <p>Time remaining:</p>
-            <div id="record-timer-display">--:--</div>
-        </div>
-
-        <div id="download-section">
-            <h2>Recording Complete!</h2>
-            <p>Your audio file is ready for download.</p>
-            <a href="#" id="download-link" download="recording.webm">Download Recording</a>
-            <p style="font-size: 0.8em; margin-top: 15px;">(You can now close this page or start again by refreshing)</p>
-        </div>
-
-        <div id="error-section">
-            <h2>Error</h2>
-            <p id="error-message"></p>
-        </div>
+    <div class="bg-wrap" aria-hidden="true">
+        <div class="stars"></div>
     </div>
+    <div class="cursor-blob" id="blob" aria-hidden="true"></div>
+
+    <main class="shell">
+        <nav class="nav">
+            <a class="brand" href="index.html">
+                <span class="brand-dots"><span></span><span></span><span></span><span></span></span>
+                <span>Bui Tan Thanh</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html#journey">Journey</a>
+                <a href="index.html#achievements">Achievements</a>
+                <a href="index.html#features">Features</a>
+                <a href="index.html">Back to Main</a>
+                <a class="btn" href="index.html#contact">Get in touch</a>
+            </div>
+        </nav>
+
+        <div class="app-container card">
+            <h1>Speaking Practice</h1>
+
+            <div id="name-section" class="app-section active">
+                <label for="user-name">Please enter your name:</label>
+                <input type="text" id="user-name" name="user-name" placeholder="Your Name">
+                <button id="start-button" class="btn">Start Process</button>
+            </div>
+
+            <div id="wait-section" class="app-section">
+                <h2>Get Ready!</h2>
+                <p>Your number is: <span id="random-number-display"></span></p>
+                <p>Recording will start in:</p>
+                <div id="wait-timer-display" class="timer-display">--:--</div>
+                <p style="font-size: .9em;">(Microphone access will be requested after this timer)</p>
+            </div>
+
+            <div id="record-section" class="app-section">
+                <h2>Recording</h2>
+                <p id="status-message">Initializing...</p>
+                <p>Time remaining:</p>
+                <div id="record-timer-display" class="timer-display">--:--</div>
+            </div>
+
+            <div id="download-section" class="app-section">
+                <h2>Recording Complete!</h2>
+                <p>Your audio file is ready for download.</p>
+                <a href="#" id="download-link" download="recording.webm" class="btn secondary mt-2">Download Recording</a>
+                <p style="font-size: 0.8em; margin-top: 15px;">(You can now close this page or start again by refreshing)</p>
+            </div>
+
+            <div id="error-section" class="app-section">
+                <h2>Error</h2>
+                <p id="error-message" style="color: var(--danger);"></p>
+            </div>
+        </div>
+
+        <footer class="footer">© <span id="year"></span> Bui Tan Thanh</footer>
+    </main>
 
     <script>
-        // --- Configuration ---
-        const WAIT_DURATION_SECONDS = 300; // Debug: 10 seconds (Change to 300 for 5 minutes)
-        const RECORD_DURATION_SECONDS = 300; // Debug: 10 seconds (Change to 300 for 5 minutes)
+        // --- Year
+        document.getElementById('year').textContent = new Date().getFullYear();
 
-        // --- DOM Elements ---
-        const nameSection = document.getElementById('name-section');
-        const waitSection = document.getElementById('wait-section');
-        const recordSection = document.getElementById('record-section');
-        const downloadSection = document.getElementById('download-section');
-        const errorSection = document.getElementById('error-section');
+        // --- Cursor blob
+        const blobEl = document.getElementById('blob');
+        let bx = window.innerWidth / 2, by = window.innerHeight / 2;
+        window.addEventListener('pointermove', (e) => { bx = e.clientX; by = e.clientY; }, { passive: true });
+        const tick = () => {
+            const curX = parseFloat(blobEl.style.left || bx), curY = parseFloat(blobEl.style.top || by);
+            blobEl.style.left = (curX + (bx - curX) * 0.12) + 'px';
+            blobEl.style.top  = (curY + (by - curY) * 0.12) + 'px';
+            requestAnimationFrame(tick);
+        };
+        tick();
+
+        // --- Audio Recorder App Logic ---
+        const WAIT_DURATION_SECONDS = 300; 
+        const RECORD_DURATION_SECONDS = 300; 
+
+        const sections = {
+            name: document.getElementById('name-section'),
+            wait: document.getElementById('wait-section'),
+            record: document.getElementById('record-section'),
+            download: document.getElementById('download-section'),
+            error: document.getElementById('error-section'),
+        };
 
         const userNameInput = document.getElementById('user-name');
         const startButton = document.getElementById('start-button');
@@ -279,9 +265,7 @@
         const statusMessage = document.getElementById('status-message');
         const downloadLink = document.getElementById('download-link');
         const errorMessage = document.getElementById('error-message');
-        const darkModeToggle = document.getElementById('darkModeToggle');
 
-        // --- State Variables ---
         let userName = '';
         let randomNumber = 0;
         let waitIntervalId = null;
@@ -290,31 +274,16 @@
         let audioChunks = [];
         let audioStream = null;
 
-        // --- Dark Mode Functions ---
-        function setDarkMode(isDark) {
-            if (isDark) {
-                document.body.classList.add('dark-mode');
-                darkModeToggle.textContent = '☀️';
-                localStorage.setItem('darkMode', 'enabled');
-            } else {
-                document.body.classList.remove('dark-mode');
-                darkModeToggle.textContent = '🌙';
-                localStorage.setItem('darkMode', 'disabled');
+        function showSection(sectionName) {
+            Object.values(sections).forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active');
+            });
+            if (sections[sectionName]) {
+                sections[sectionName].style.display = 'block';
+                sections[sectionName].classList.add('active');
             }
         }
-
-        // Check for saved dark mode preference
-        const savedDarkMode = localStorage.getItem('darkMode');
-        if (savedDarkMode === 'enabled') {
-            setDarkMode(true);
-        }
-
-        // Toggle dark mode event listener
-        darkModeToggle.addEventListener('click', () => {
-            setDarkMode(!document.body.classList.contains('dark-mode'));
-        });
-
-        // --- Functions ---
 
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
@@ -325,27 +294,17 @@
         function displayError(message) {
             console.error("Error:", message);
             errorMessage.textContent = message;
-            // Hide other sections and show error section
-            nameSection.style.display = 'none';
-            waitSection.style.display = 'none';
-            recordSection.style.display = 'none';
-            downloadSection.style.display = 'none';
-            errorSection.style.display = 'block';
+            showSection('error');
             // Clean up any running timers/processes
             clearInterval(waitIntervalId);
             clearInterval(recordIntervalId);
-            if (mediaRecorder && mediaRecorder.state === 'recording') {
-                mediaRecorder.stop();
-            }
-            if (audioStream) {
-                audioStream.getTracks().forEach(track => track.stop());
-            }
+            if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+            if (audioStream) audioStream.getTracks().forEach(track => track.stop());
         }
 
         function startWaitTimer() {
             let timeLeft = WAIT_DURATION_SECONDS;
             waitTimerDisplay.textContent = formatTime(timeLeft);
-
             waitIntervalId = setInterval(() => {
                 timeLeft--;
                 waitTimerDisplay.textContent = formatTime(timeLeft);
@@ -357,89 +316,60 @@
         }
 
         async function startRecordingProcess() {
-            waitSection.style.display = 'none';
-            recordSection.style.display = 'block';
+            showSection('record');
             statusMessage.textContent = 'Requesting microphone access...';
-            statusMessage.classList.remove('recording'); // Ensure blink animation is off initially
+            statusMessage.classList.remove('recording');
 
             try {
                 audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 statusMessage.textContent = 'Microphone accessed. Starting recording...';
-
                 mediaRecorder = new MediaRecorder(audioStream);
-                audioChunks = []; // Reset chunks for new recording
+                audioChunks = [];
 
                 mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        audioChunks.push(event.data);
-                        console.log("Received audio chunk size:", event.data.size);
-                    }
+                    if (event.data.size > 0) audioChunks.push(event.data);
                 };
 
                 mediaRecorder.onstop = () => {
-                    console.log("MediaRecorder stopped.");
-                    clearInterval(recordIntervalId); // Stop the timer interval
+                    clearInterval(recordIntervalId);
                     statusMessage.textContent = 'Recording finished. Processing audio...';
                     statusMessage.classList.remove('recording');
 
                     if (audioChunks.length === 0) {
-                        console.warn("No audio chunks recorded.");
                         displayError("No audio data was recorded. Please check microphone permissions and try again.");
                         return;
                     }
 
-                    // Determine MIME type (browser dependent, webm often preferred)
                     const mimeType = mediaRecorder.mimeType || 'audio/webm';
-                    const fileExtension = mimeType.split('/')[1].split(';')[0]; // e.g., 'webm' or 'ogg'
-
+                    const fileExtension = mimeType.split('/')[1].split(';')[0];
                     const audioBlob = new Blob(audioChunks, { type: mimeType });
                     const audioUrl = URL.createObjectURL(audioBlob);
 
-                    // Set download link
                     downloadLink.href = audioUrl;
-                    // Sanitize username for filename
                     const safeUserName = userName.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'user';
                     downloadLink.download = `recording-${safeUserName}-num${randomNumber}.${fileExtension}`;
 
-                    // Show download section
-                    recordSection.style.display = 'none';
-                    downloadSection.style.display = 'block';
-                    console.log("Download link created:", downloadLink.download);
-
-                    // Stop the microphone track(s)
-                     if (audioStream) {
-                        audioStream.getTracks().forEach(track => track.stop());
-                        console.log("Microphone stream stopped.");
-                    }
+                    showSection('download');
+                    if (audioStream) audioStream.getTracks().forEach(track => track.stop());
                 };
 
-                mediaRecorder.onerror = (event) => {
-                     console.error("MediaRecorder error:", event.error);
-                    displayError(`Recording error: ${event.error.name} - ${event.error.message}`);
-                };
+                mediaRecorder.onerror = (event) => displayError(`Recording error: ${event.error.name} - ${event.error.message}`);
 
-                // Start Recording and Timer
                 mediaRecorder.start();
-                console.log("MediaRecorder started. State:", mediaRecorder.state);
                 statusMessage.textContent = 'RECORDING';
-                statusMessage.classList.add('recording'); // Add blinking class
+                statusMessage.classList.add('recording');
                 startRecordTimer();
 
-                 // Automatically stop after duration
-                 setTimeout(() => {
-                    if (mediaRecorder && mediaRecorder.state === 'recording') {
-                        console.log("Recording duration reached. Stopping recorder.");
-                        mediaRecorder.stop();
-                        // The rest of the process continues in mediaRecorder.onstop
-                    }
-                 }, RECORD_DURATION_SECONDS * 1000);
+                setTimeout(() => {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+                }, RECORD_DURATION_SECONDS * 1000);
 
             } catch (err) {
                 console.error("Error accessing media devices:", err);
                 if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
                     displayError('Microphone access denied. Please allow microphone access in your browser settings and refresh the page.');
                 } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-                     displayError('No microphone found. Please ensure a microphone is connected and enabled.');
+                    displayError('No microphone found. Please ensure a microphone is connected and enabled.');
                 } else {
                     displayError(`Could not access microphone: ${err.name} - ${err.message}`);
                 }
@@ -447,20 +377,15 @@
         }
 
         function startRecordTimer() {
-             let timeLeft = RECORD_DURATION_SECONDS;
+            let timeLeft = RECORD_DURATION_SECONDS;
             recordTimerDisplay.textContent = formatTime(timeLeft);
-
             recordIntervalId = setInterval(() => {
                 timeLeft--;
                 recordTimerDisplay.textContent = formatTime(timeLeft);
-                // Timer now purely informational, stopping is handled by setTimeout in startRecordingProcess
-                if (timeLeft < 0) { // Safety check to clear interval if setTimeout fails
-                    clearInterval(recordIntervalId);
-                }
+                if (timeLeft < 0) clearInterval(recordIntervalId);
             }, 1000);
         }
 
-        // --- Event Listeners ---
         startButton.addEventListener('click', () => {
             userName = userNameInput.value.trim();
             if (!userName) {
@@ -468,28 +393,19 @@
                 userNameInput.focus();
                 return;
             }
-
-            // Disable button to prevent multiple starts
             startButton.disabled = true;
             userNameInput.disabled = true;
-
-            // Generate random number
             randomNumber = Math.floor(Math.random() * 10) + 1;
             randomNumberDisplay.textContent = randomNumber;
-
-            // Hide name section, show wait section
-            nameSection.style.display = 'none';
-            waitSection.style.display = 'block';
-
-            // Start the waiting timer
+            showSection('wait');
             startWaitTimer();
         });
 
-        // Initial setup check
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-             displayError('Your browser does not support the MediaRecorder API. Please use a modern browser like Chrome or Firefox.');
+            displayError('Your browser does not support the MediaRecorder API. Please use a modern browser like Chrome or Firefox.');
+        } else {
+            showSection('name');
         }
-
     </script>
 </body>
 </html>

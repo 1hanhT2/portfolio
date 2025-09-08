@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Random ID Generator</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500&display=swap">
+
+<style>
+
+  body {
+
+    font-family: 'Roboto', sans-serif;
+
+    margin: 0;
+
+    padding: 0;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    min-height: 100vh;
+
+    background: linear-gradient(45deg, #a7c2ff, #cce0ff, #e0f7fa, #f8f0ec); /* Gradient colors */
+
+    background-size: 300% 300%; /* Make gradient larger than viewport */
+
+    animation: gradientAnimation 15s ease infinite; /* Animated gradient */
+
+  }
+
+
+
+  @keyframes gradientAnimation {
+
+    0% {
+
+      background-position: 0% 50%;
+
+    }
+
+    50% {
+
+      background-position: 100% 50%;
+
+    }
+
+    100% {
+
+      background-position: 0% 50%;
+
+    }
+
+  }
+
+
+
+
+
+  .container {
+
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white container */
+
+    padding: 45px; /* Increased padding */
+
+    border-radius: 15px; /* More rounded corners */
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* Enhanced shadow */
+
+    text-align: center;
+
+    width: 420px; /* Slightly wider container */
+
+    position: relative; /* For pseudo-element border */
+
+    overflow: hidden; /* Clip pseudo-element */
+
+  }
+
+
+
+  /* Decorative border using pseudo-element */
+
+  .container::before {
+
+    content: '';
+
+    position: absolute;
+
+    top: -3px;
+
+    left: -3px;
+
+    right: -3px;
+
+    bottom: -3px;
+
+    background: linear-gradient(45deg, #007BFF, #56CCF2, #2F80ED, #00A3FF); /* Border gradient */
+
+    z-index: -1;
+
+    border-radius: inherit; /* Match container's border-radius */
+
+    animation: borderAnimation 6s linear infinite; /* Animate border gradient */
+
+    background-size: 200% 200%;
+
+  }
+
+
+
+  @keyframes borderAnimation {
+
+    0% {
+
+      background-position: 0% 0%;
+
+    }
+
+    100% {
+
+      background-position: 100% 100%;
+
+    }
+
+  }
+
+
+
+
+
+  h2 {
+
+    font-family: 'Playfair Display', serif;
+
+    color: #3a4e7a; /* Deeper heading color */
+
+    margin-bottom: 30px; /* Increased bottom margin */
+
+    font-size: 2.8em; /* Slightly larger heading */
+
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.08); /* Subtle text shadow */
+
+  }
+
+  .input-group {
+
+    margin-bottom: 25px; /* Increased input group margin */
+
+  }
+
+  .input-group label {
+
+    display: block;
+
+    margin-bottom: 10px; /* Increased label margin */
+
+    font-weight: 500;
+
+    color: #445577; /* Darker label color */
+
+    font-size: 1.15em; /* Slightly larger label */
+
+    text-align: left;
+
+    letter-spacing: 0.5px; /* Slight letter spacing */
+
+  }
+
+  .input-group input[type="number"] {
+
+    width: calc(100% - 24px); /* Adjust for increased padding */
+
+    padding: 14px 12px; /* Increased input padding */
+
+    border: 2px solid #cddded; /* Lighter border */
+
+    border-radius: 10px; /* More rounded input */
+
+    font-size: 1.05em;
+
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.05) inset; /* Subtle inner shadow */
+
+  }
+
+  .input-group input[type="number"]:focus {
+
+    border-color: #0088ff; /* Brighter focus border */
+
+    outline: none;
+
+    box-shadow: 0 0 0 3px rgba(0,136,255,0.2); /* More prominent focus shadow */
+
+  }
+
+  button {
+
+    padding: 15px 30px; /* Increased button padding */
+
+    background-color: #007BFF;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 10px; /* More rounded button */
+
+    cursor: pointer;
+
+    font-size: 1.2em; /* Slightly larger button font */
+
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15); /* More pronounced button shadow */
+
+    letter-spacing: 0.8px; /* Button letter spacing */
+
+  }
+
+  button:hover {
+
+    background-color: #0056b3;
+
+    transform: scale(1.06); /* Slightly more scale on hover */
+
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2); /* Increased hover shadow */
+
+  }
+
+  button:active {
+
+    transform: scale(0.97);
+
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15); /* Reduced shadow on active */
+
+  }
+
+  #randomIdDisplay {
+
+    margin-top: 35px; /* Increased display margin */
+
+    padding: 22px; /* Increased display padding */
+
+    background-color: rgba(224, 247, 250, 0.7); /* Semi-transparent light blue */
+
+    border: 3px dashed rgba(192, 214, 228, 0.8); /* More prominent dashed border */
+
+    border-radius: 12px; /* More rounded display */
+
+    text-align: center;
+
+    font-size: 1.5em; /* Larger ID font */
+
+    font-weight: bold;
+
+    color: #244a83; /* Even darker blue text */
+
+    word-wrap: break-word;
+
+    letter-spacing: 1.2px; /* More letter spacing */
+
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.6); /* Light text shadow */
+
+    transition: background-color 0.5s ease, box-shadow 0.3s ease; /* Smooth transitions */
+
+    box-shadow: 3px 3px 8px rgba(0,0,0,0.1); /* Display shadow */
+
+  }
+
+  #randomIdDisplay.highlight {
+
+    background-color: rgba(176, 224, 230, 0.8); /* Slightly different highlight color */
+
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.15); /* Highlight shadow */
+
+  }
+
+
+
+
+
+  #copyButton {
+
+    margin-top: 25px; /* Increased copy button margin */
+
+  }
+
+  #message {
+
+    margin-top: 20px; /* Increased message margin */
+
+    font-size: 1.05em;
+
+    color: #1e8449; /* Richer green success color */
+
+    text-align: center;
+
+    opacity: 0;
+
+    transition: opacity 0.5s ease, color 0.3s ease; /* Color transition for message */
+
+    font-weight: 500; /* Slightly bolder message text */
+
+  }
+
+  #message.show {
+
+    opacity: 1;
+
+  }
+
+  #error-message {
+
+    margin-top: 20px; /* Increased error message margin */
+
+    font-size: 1.05em;
+
+    color: #c23b22; /* Richer red error color */
+
+    text-align: center;
+
+    min-height: 1.1em; /* Ensure space */
+
+    font-weight: 500; /* Slightly bolder error text */
+
+  }
+
+
+
+</style>
+
+</head>
+
+<body>
+
+
+
+<div class="container">
+
+  <h2>ID Generator</h2>
+
+
+
+  <div class="input-group">
+
+    <label for="idLength">Choose ID Length (1-20):</label>
+
+    <input type="number" id="idLength" value="7" min="1" max="20">
+
+    <div id="error-message"></div>
+
+  </div>
+
+
+
+  <button onclick="generateAndDisplayId()">Generate ID</button>
+
+
+
+  <div id="randomIdDisplay">
+
+      <span id="randomId">Click "Generate ID"</span>
+
+  </div>
+
+
+
+  <button id="copyButton" onclick="copyToClipboard()" disabled>Copy ID</button>
+
+  <div id="message"></div>
+
+
+
+</div>
+
+
+
+<script>
+
+function generateRandomId(length) {
+
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+  let randomId = '';
+
+  for (let i = 0; i < length; i++) {
+
+    const randomIndex = Math.floor(Math.random() * characters.length);
+
+    randomId += characters.charAt(randomIndex);
+
+  }
+
+  return randomId;
+
+}
+
+
+
+function generateAndDisplayId() {
+
+  const idLengthInput = document.getElementById('idLength');
+
+  const idLength = parseInt(idLengthInput.value);
+
+  const errorMessageDiv = document.getElementById('error-message');
+
+
+
+  if (isNaN(idLength) || idLength < 1 || idLength > 20) {
+
+    errorMessageDiv.textContent = "Please enter a valid length between 1 and 20.";
+
+    return;
+
+  } else {
+
+    errorMessageDiv.textContent = ""; // Clear any previous error message
+
+  }
+
+
+
+
+
+  const generatedId = generateRandomId(idLength);
+
+  const randomIdSpan = document.getElementById('randomId');
+
+  randomIdSpan.textContent = generatedId;
+
+
+
+  const displayArea = document.getElementById('randomIdDisplay');
+
+  displayArea.classList.add('highlight'); // Add highlight class
+
+  displayArea.addEventListener('animationend', () => { // Listen for animation end
+
+      displayArea.classList.remove('highlight'); // Remove class after animation
+
+  }, { once: true }); // Only listen once
+
+
+
+  document.getElementById('copyButton').disabled = false; // Enable copy button
+
+  document.getElementById('message').textContent = ""; // Clear any previous message
+
+  document.getElementById('message').classList.remove('show'); // Hide message if visible
+
+}
+
+
+
+function copyToClipboard() {
+
+  const idToCopy = document.getElementById('randomId').textContent;
+
+  navigator.clipboard.writeText(idToCopy).then(() => {
+
+    const messageDiv = document.getElementById('message');
+
+    messageDiv.textContent = 'Stylish ID copied to clipboard!';
+
+    messageDiv.classList.add('show'); // Show success message
+
+    setTimeout(() => { // Hide message after a delay
+
+        messageDiv.classList.remove('show');
+
+    }, 3000); // Message disappears after 3 seconds
+
+
+
+  })
+
+  .catch(err => {
+
+    console.error('Could not copy text: ', err);
+
+    const messageDiv = document.getElementById('message');
+
+    messageDiv.textContent = 'Copy failed. Please try again.';
+
+    messageDiv.classList.add('show'); // Show error message
+
+    setTimeout(() => { // Hide message after a delay
+
+        messageDiv.classList.remove('show');
+
+    }, 3000); // Message disappears after 3 seconds
+
+  });
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

@@ -7,19 +7,154 @@
   <link rel="icon" type="image/svg+xml" href="./resources/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    /* --- Base / tokens --------------------------------------------------- */
+    :root {
+      --bg: #0b0d12;           /* page background */
+      --surface: #11161d;      /* cards, nav */
+      --surface-2: #0f141a;    /* chips, subtle areas */
+      --text: #e5ecf5;         /* primary text */
+      --muted: #9fb0c3;        /* secondary text */
+      --line: #263243;         /* separators */
+      --accent: #7c5cff;       /* primary brand */
+      --accent-2: #00d4ff;     /* highlight */
+      --ok: #3ae374;           /* green */
+      --warn: #f5a524;         /* amber */
+      --danger: #ff5470;       /* pink/red */
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35), 0 4px 8px rgba(0,0,0,.25);
+    }
+    *, *::before, *::after { box-sizing: border-box }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif; color: var(--text); background: var(--bg);
+      line-height: 1.6; letter-spacing: 0.2px; overflow-x: hidden;
+    }
+    h1, h2, h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+    img { max-width: 100%; display: block }
+    a { color: inherit; text-decoration: none }
+    .center { text-align: center }
+    .lead { color: var(--muted); font-size: 1.05rem }
+    .mt-2 { margin-top: .75rem }
+    
+    /* --- Subtle background (parallax stars + gradient field) ------------- */
+    .bg-wrap {
+      position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden;
+      background: radial-gradient(1200px 700px at 10% -10%, rgba(124,92,255,.35), transparent 60%),
+                  radial-gradient(900px 600px at 85% 20%, rgba(0,212,255,.25), transparent 60%),
+                  radial-gradient(900px 700px at 50% 110%, rgba(255,84,112,.18), transparent 60%);
+      filter: saturate(110%);
+    }
+     .bg-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 15px 25px, white, transparent),
+        radial-gradient(1px 1px at 75px 95px, white, transparent),
+        radial-gradient(1px 1px at 135px 165px, white, transparent),
+        radial-gradient(1px 1px at 45px 125px, white, transparent),
+        radial-gradient(1px 1px at 185px 55px, white, transparent);
+      background-size: 200px 200px;
+      opacity: 0.3;
+    }
+    .stars { position: absolute; inset: -10vh -10vw; background: transparent; }
+    .stars::before, .stars::after {
+      content: ""; position: absolute; inset: 0; background-repeat: repeat; background-size: 300px 300px; opacity: .35;
+    }
+    .stars::before { background-image: radial-gradient(1px 1px at 20px 30px, #bbd1ff 50%, transparent 51%), radial-gradient(1px 1px at 140px 180px, #9bc9ff 50%, transparent 51%), radial-gradient(1px 1px at 240px 80px, #d6e2ff 50%, transparent 51%); transform: translateZ(0); }
+    .stars::after { background-image: radial-gradient(1px 1px at 70px 60px, #cde0ff 50%, transparent 51%), radial-gradient(1px 1px at 200px 200px, #c3d9ff 50%, transparent 51%); opacity: .2; }
+
+    /* --- Shell ----------------------------------------------------------- */
+    .shell { width: min(1160px, 92vw); margin-inline: auto; }
+    .section { padding: 80px 0; position: relative; }
+    .section h2 { font-size: clamp(1.6rem, 2.6vw, 2rem); margin: 0 0 12px; letter-spacing: .2px;
+      background: linear-gradient(90deg, var(--text), #c7d2fe 30%, #a5b4fc 60%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    /* --- Nav (decluttered) ---------------------------------------------- */
+    .nav {
+      position: sticky; top: 14px; z-index: 50; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 10px 14px; border-radius: 999px; backdrop-filter: blur(10px);
+      background: color-mix(in oklab, var(--surface) 88%, transparent); box-shadow: var(--shadow);
+      border: 1px solid color-mix(in oklab, var(--line) 80%, transparent); margin-bottom: 40px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    .brand-dots { display:inline-flex; gap:4px }
+    .brand-dots span { width:8px; height:8px; border-radius:999px; display:block; background: linear-gradient(135deg, var(--accent), var(--accent-2)); filter: drop-shadow(0 0 6px rgba(124,92,255,.6)); }
+
+    .nav-links { display:flex; align-items:center; gap: 8px; }
+    .nav a { padding: 8px 12px; border-radius: 10px; color: var(--muted); }
+    .nav a:hover { color: var(--text); background: linear-gradient(135deg, rgba(124,92,255,.12), rgba(0,212,255,.12)); }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding: 10px 14px; border-radius: 12px; font-weight: 600; border: 1px solid transparent; background:
+      linear-gradient(var(--surface), var(--surface)) padding-box,
+      linear-gradient(135deg, var(--accent), var(--accent-2)) border-box;
+      color: var(--text);
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,.05), 0 6px 18px rgba(124,92,255,.25);
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: inset 0 -1px 0 rgba(255,255,255,.06), 0 10px 26px rgba(124,92,255,.33); }
+    .btn.secondary { background:
+      linear-gradient(var(--surface), var(--surface)) padding-box,
+      linear-gradient(135deg, #304055, #2b3240) border-box; color: var(--text);
+    }
+
+    @media (max-width: 820px) {
+      .nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        border-radius: var(--radius);
+        gap: 6px;
+      }
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    /* --- Cards / grids --------------------------------------------------- */
+    .grid { display: grid; gap: 16px; margin-top: 24px; }
+    .cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width: 900px) { .cols-3 { grid-template-columns: 1fr 1fr } }
+    @media (max-width: 620px) { .cols-3 { grid-template-columns: 1fr } }
+
+    .card {
+      position: relative;
+      background: linear-gradient(180deg, color-mix(in oklab, var(--surface) 92%, transparent), color-mix(in oklab, var(--surface-2) 92%, transparent));
+      border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 16px 38px rgba(0,0,0,.45); }
+    .thumb { border-radius: 12px; border:1px solid var(--line) }
+    .actions { display:flex; gap: 10px; flex-wrap: wrap }
+    
+    /* --- Footer ---------------------------------------------------------- */
+    .footer { color: var(--muted); padding: 40px 0 70px; text-align:center }
+
+    .reveal { opacity: 0; transform: translateY(12px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.is-visible { opacity: 1; transform: none; }
+    
+  </style>
 </head>
 <body>
+  <div id="progress"></div>
+  <div class="cursor-blob" id="blob" aria-hidden="true"></div>
+  <div class="bg-wrap" aria-hidden="true">
+    <div class="stars" id="stars" data-depth="0.2"></div>
+  </div>
 
-  <main class="shell pattern">
+  <main class="shell">
     <nav class="nav">
       <a class="brand" href="index.html">
         <span class="brand-dots"><span></span><span></span><span></span><span></span></span>
         <span>Bui Tan Thanh</span>
       </a>
       <div class="nav-links">
-        <a href="index.html#solutions">Solutions</a>
+        <a href="index.html#journey">Journey</a>
+        <a href="index.html#achievements">Achievements</a>
         <a href="index.html#features">Features</a>
         <a href="index.html#projects">Projects</a>
         <a class="btn" href="index.html#contact">Get in touch</a>
@@ -31,7 +166,7 @@
       <p class="lead">A growing set of small, purposeful builds. Most are quick to try.</p>
 
       <div class="grid cols-3 projects-grid">
-        <div class="card">
+        <div class="card reveal tilt">
           <img class="thumb" src="./resources/ai.png" alt="AI Listening Test Generator" />
           <h3 class="mt-2">AI Listening Test Generator</h3>
           <p>Create practice listening tests from audio using AI.</p>
@@ -40,7 +175,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card reveal tilt">
           <img class="thumb" src="./resources/olympic.png" alt="Olympic 30/4 Practice Tests" />
           <h3 class="mt-2">Olympic 30/4 Practice</h3>
           <p>Curated tests to help students prep for the 30/4 competition.</p>
@@ -49,7 +184,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card reveal tilt">
           <img class="thumb" src="./resources/noventum.png" alt="n0ventum" />
           <h3 class="mt-2">n0ventum Habit Tracker</h3>
           <p>Track daily habits with streaks, badges, and insights.</p>
@@ -58,7 +193,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card reveal tilt">
           <img class="thumb" src="./resources/hsgqg_gen.png" alt="HSGQG Test Generator" />
           <h3 class="mt-2">HSGQG Test Generator</h3>
           <p>Full exam creation from text, audio, or YouTube.</p>
@@ -67,7 +202,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card reveal tilt">
           <img class="thumb" src="./resources/ocr.png" alt="OCR" />
           <h3 class="mt-2">OCR & Linking</h3>
           <p>Fast capture from images with auto‑linking to notes.</p>
@@ -76,7 +211,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card reveal tilt">
           <img class="thumb" src="./resources/linker.png" alt="Linker" />
           <h3 class="mt-2">Linker</h3>
           <p>Turn research into connected references with one click.</p>
@@ -85,7 +220,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card reveal tilt">
           <img class="thumb" src="https://placehold.co/600x400/A0D2DB/FFFFFF?text=Speaking" alt="Speaking tool" />
           <h3 class="mt-2">Speaking Practice</h3>
           <p>Timed prompts + recorder. Save your audio for review.</p>
@@ -94,7 +229,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card reveal tilt">
           <img class="thumb" src="https://placehold.co/600x400/5A8F9A/FFFFFF?text=Speedrun" alt="Speedrun study timer" />
           <h3 class="mt-2">Speed‑run Timer</h3>
           <p>Measure focused sessions with accurate split times.</p>
@@ -103,7 +238,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card reveal tilt">
           <img class="thumb" src="https://placehold.co/600x400/3D6E7A/FFFFFF?text=Study+Notes" alt="Study notes" />
           <h3 class="mt-2">Study Workspace</h3>
           <p>Minimal clock + notes + task tracker for deep work.</p>
@@ -112,7 +247,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card reveal tilt">
           <img class="thumb" src="https://placehold.co/600x400/2f6cf7/FFFFFF?text=Kanban" alt="Kanban board" />
           <h3 class="mt-2">Kanban Board (timed)</h3>
           <p>Drag‑and‑drop with effort tracking and confetti for wins.</p>
@@ -125,8 +260,80 @@
 
     <footer class="footer">© <span id="year"></span> Bui Tan Thanh</footer>
   </main>
+  
+  <style>
+    /* Section heading underline */
+    .section h2 { position: relative }
+    .section h2::after { content:""; position:absolute; left:0; bottom:-10px; width:68px; height:2px; border-radius:2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2)); opacity:.6 }
+      
+    /* Card ambient ring + thumb zoom */
+    .card::after { content:""; position:absolute; inset:-1px; border-radius: inherit; pointer-events:none;
+      background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(0,212,255,.22)); opacity:0; transition: opacity 0.4s ease-in-out, filter 0.4s ease-in-out; z-index:-1; }
+    .card:hover::after { opacity:.75; filter: blur(18px); }
+    .tilt .thumb { transition: transform .35s ease; }
+    .tilt:hover .thumb { transform: scale(1.03); }
 
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    /* Nav state when scrolled */
+    .nav.scrolled { background: color-mix(in oklab, var(--surface) 92%, transparent); border-color: color-mix(in oklab, var(--line) 95%, transparent); box-shadow: 0 8px 24px rgba(0,0,0,.46); }
+
+    /* Scroll progress bar */
+    #progress { position: fixed; left: 0; top: 0; height: 3px; width: var(--w, 0%); z-index: 1000;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2)); box-shadow: 0 0 16px rgba(124,92,255,.5); }
+
+    /* Cursor blob (ambient gradient) */
+    .cursor-blob { position: fixed; top: 0; left: 0; width: 260px; height: 260px; border-radius: 50%; pointer-events: none; z-index: -1;
+      background: radial-gradient(closest-side, rgba(124,92,255,.22), rgba(0,212,255,.12), transparent 60%);
+      filter: blur(30px); transform: translate(-50%, -50%); mix-blend-mode: screen; opacity:.7; }
+    @media (max-width: 900px), (pointer: coarse) { .cursor-blob { display: none } }
+  </style>
+
+  <script>
+    // --- Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // --- Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+    }, { threshold: 0.14 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    
+    // --- Scroll progress bar
+    const progressEl = document.getElementById('progress');
+    const setProg = () => {
+      const {scrollTop, scrollHeight, clientHeight} = document.documentElement;
+      const p = (scrollTop / (scrollHeight - clientHeight)) * 100;
+      progressEl.style.setProperty('--w', p + '%');
+    };
+    window.addEventListener('scroll', setProg);
+    window.addEventListener('resize', setProg);
+    setProg();
+
+    // --- Cursor blob (ambient light follow)
+    const blobEl = document.getElementById('blob');
+    let bx = window.innerWidth / 2, by = window.innerHeight / 2;
+    window.addEventListener('pointermove', (e) => { bx = e.clientX; by = e.clientY; }, { passive: true });
+    const tick = () => {
+      const curX = parseFloat(blobEl.style.left || bx), curY = parseFloat(blobEl.style.top || by);
+      blobEl.style.left = (curX + (bx - curX) * 0.12) + 'px';
+      blobEl.style.top  = (curY + (by - curY) * 0.12) + 'px';
+      requestAnimationFrame(tick);
+    };
+    tick();
+
+    // --- Tilt cards on hover (projects)
+    const tiltCards = document.querySelectorAll('.tilt');
+    tiltCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        const rx = ((y / r.height) - 0.5) * -6;
+        const ry = ((x / r.width) - 0.5) * 6;
+        card.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+    });
+  </script>
 </body>
 </html>
 

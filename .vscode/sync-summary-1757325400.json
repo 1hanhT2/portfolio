@@ -1,0 +1,37 @@
+{
+    "_readMe": "Review list of sync operations, then use Ftp-sync: Commit command to accept changes. Note that if you're not in your root directory then all the parent directories will also be uploaded",
+    "_warning": "This file should not be saved, reopened review file won't work!",
+    "filesToUpdate": [
+        "kanban",
+        "index.html",
+        "more-projects.html",
+        "study",
+        "resources/gift-svgrepo-com.svg"
+    ],
+    "filesToAdd": [
+        "tmp_about.txt",
+        "tmp_integrations.txt",
+        "tmp_section.txt",
+        "styles/main.css"
+    ],
+    "dirsToAdd": [
+        "styles"
+    ],
+    "filesToRemove": [
+        "dist/tailwind.css",
+        "head2.txt",
+        "head_snippet.txt",
+        "index.html.copy",
+        "mp_head.txt",
+        "package.json",
+        "postcss.config.js",
+        "resources/logo.png",
+        "resources/thanh_signature_pen.svg",
+        "speaking",
+        "src",
+        "tailwind.config.js"
+    ],
+    "dirsToRemove": [
+        "dist"
+    ]
+}

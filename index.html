@@ -26,7 +26,9 @@
       --shadow: 0 10px 30px rgba(0,0,0,.35), 0 4px 8px rgba(0,0,0,.25);
     }
     *, *::before, *::after { box-sizing: border-box }
-    html { scroll-behavior: smooth; }
+    html {
+      /* Reset scrolling properties */
+    }
     body {
       margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif; color: var(--text); background: var(--bg);
       line-height: 1.6; letter-spacing: 0.2px; overflow-x: hidden;
@@ -49,6 +51,19 @@
                   radial-gradient(900px 600px at 85% 20%, rgba(0,212,255,.25), transparent 60%),
                   radial-gradient(900px 700px at 50% 110%, rgba(255,84,112,.18), transparent 60%);
       filter: saturate(110%);
+    }
+    .bg-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 15px 25px, white, transparent),
+        radial-gradient(1px 1px at 75px 95px, white, transparent),
+        radial-gradient(1px 1px at 135px 165px, white, transparent),
+        radial-gradient(1px 1px at 45px 125px, white, transparent),
+        radial-gradient(1px 1px at 185px 55px, white, transparent);
+      background-size: 200px 200px;
+      opacity: 0.3;
     }
     .stars { position: absolute; inset: -10vh -10vw; background: transparent; }
     .stars::before, .stars::after {
@@ -91,6 +106,19 @@
       linear-gradient(135deg, #304055, #2b3240) border-box; color: var(--text);
     }
 
+    @media (max-width: 820px) {
+      .nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        border-radius: var(--radius);
+        gap: 6px;
+      }
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
     /* --- Hero with parallax --------------------------------------------- */
     .hero { position: relative; padding: 110px 0 86px; text-align: center; overflow: hidden; border-radius: calc(var(--radius) + 12px); border: 1px solid var(--line); box-shadow: var(--shadow); background:
       radial-gradient(1100px 700px at 20% 0%, rgba(124,92,255,.16), transparent 60%),
@@ -118,7 +146,15 @@
     .cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     @media (max-width: 900px) { .cols-3 { grid-template-columns: 1fr 1fr } .cols-4 { grid-template-columns: 1fr 1fr } }
-    @media (max-width: 620px) { .cols-3, .cols-4 { grid-template-columns: 1fr } }
+    @media (max-width: 620px) { 
+      .cols-3, .cols-4 { grid-template-columns: 1fr } 
+      .decor.small { display: none; }
+      .section { padding: 40px 0; }
+      .logo-grid-wrapper {
+        grid-template-columns: 1fr 1fr;
+        max-width: 280px;
+      }
+    }
 
     .card {
       position: relative;
@@ -140,6 +176,14 @@
     .logo-card:hover img { filter: grayscale(0%) opacity(1); }
     .logo-card:hover { transform: translateY(-4px); }
 
+    .logo-grid-wrapper {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      max-width: 540px;
+      margin: 24px auto 0;
+    }
+
     /* --- Timeline (Journey) --------------------------------------------- */
     .timeline { position: relative; margin-top: 24px; }
     .timeline::before { content:""; position:absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, rgba(124,92,255,.35), rgba(0,212,255,.35)); }
@@ -148,7 +192,7 @@
     .eyebrow { font-size:.9rem; color: var(--muted) }
 
     /* --- Testimonials ---------------------------------------------------- */
-    .testimonial { display:flex; gap: 12px; align-items:flex-start }
+    .testimonial { display:flex; gap: 12px; align-items:center }
     .avatar { width: 48px; height: 48px; border-radius: 999px; border:1px solid var(--line) }
     .byline { color: var(--muted); font-size: .92rem; margin-top: 6px }
     .quote { font-style: italic }
@@ -209,7 +253,7 @@
       <!-- simplified: remove parallax blobs for a cleaner hero -->
       <div class="hero-inner">
       <h1 class="reveal">Hi, I’m <span class="grad">Thanh</span> — language × code.</h1>
-      <p class="reveal" style="transition-delay:.05s; max-width: 720px; margin: 0;">Student & builder. I make small, clear tools for learning — combining competitive English with practical front‑end skills.</p>
+      <p class="reveal" style="transition-delay:.05s; max-width: 720px; margin: 12px auto 0;">Student & builder. I make small, clear tools for learning — combining competitive English with practical front‑end skills.</p>
       <ul class="meta reveal" style="transition-delay:.08s">
         <li>IELTS 8 (L9 • R8.5)</li>
         <li>Front‑end: HTML • CSS • JS</li>
@@ -432,7 +476,7 @@
     <section id="integrations" class="section">
       <h2>Tools I Work With</h2>
       <p class="lead">Comfortable with a range of design, coding, and productivity apps, including Figma, Git, Slack, and the Google Suite.</p>
-      <div class="grid cols-4">
+      <div class="logo-grid-wrapper">
         <div class="logo-card reveal"><img loading="lazy" alt="Figma" src="https://cdn.simpleicons.org/figma/0ACF83" /></div>
         <div class="logo-card reveal"><img loading="lazy" alt="Git" src="https://cdn.simpleicons.org/git/F05032" /></div>
         <div class="logo-card reveal"><img loading="lazy" alt="Google Drive" src="https://cdn.simpleicons.org/googledrive/1A73E8" /></div>
@@ -498,14 +542,12 @@
             </div>
           </div>
           <div class="field mt-2">
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;">
-               <label for="message">Message</label>
-               <button type="button" id="aiHelperBtn" class="btn secondary" style="padding: 4px 10px; font-size: 0.8rem; font-weight: 500;">✨ Help me write</button>
-            </div>
+            <label for="message">Message</label>
             <textarea id="message" name="message" rows="4" placeholder="Write a few keywords (e.g., 'EdTech project idea') and let AI help you draft a full message!" required></textarea>
           </div>
-          <div class="mt-2">
+          <div class="form-actions mt-2">
             <button type="submit" class="btn">Send message</button>
+            <button type="button" id="aiHelperBtn" class="btn secondary">✨ Help me write</button>
           </div>
           <p id="formStatus" class="form-status" aria-live="polite"></p>
         </form>
@@ -531,10 +573,34 @@
     const backtop = document.getElementById('backtop');
     backtop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
+    // --- Smooth Scroll for Nav links ---
+    const allNavLinks = document.querySelectorAll('.nav a[href^="#"]');
+    const navBar = document.getElementById('nav');
+
+    allNavLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+
+        if (targetElement) {
+          const navHeight = navBar.offsetHeight;
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navHeight - 20; // 20px buffer
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
     // --- Nav active link (scrollspy) + backtop show
     const sections = ['journey','features','projects','achievements','contact'];
     const links = [...document.querySelectorAll('.nav a[href^="#"]')];
     const nav = document.getElementById('nav');
+
     const spy = () => {
       const y = window.scrollY + 110;
       sections.forEach(id => {
@@ -721,7 +787,7 @@
 
     /* Card ambient ring + thumb zoom */
     .card::after { content:""; position:absolute; inset:-1px; border-radius: inherit; pointer-events:none;
-      background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(0,212,255,.22)); opacity:0; transition: opacity .25s ease, filter .25s ease; z-index:-1; }
+      background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(0,212,255,.22)); opacity:0; transition: opacity 0.4s ease-in-out, filter 0.4s ease-in-out; z-index:-1; }
     .card:hover::after { opacity:.75; filter: blur(18px); }
     .tilt .thumb { transition: transform .35s ease; }
     .tilt:hover .thumb { transform: scale(1.03); }
@@ -750,6 +816,7 @@
       filter: blur(30px); transform: translate(-50%, -50%); mix-blend-mode: screen; opacity:.7; }
     @media (max-width: 900px), (pointer: coarse) { .cursor-blob { display: none } }
     
+
     /* Contact section styles */
     .contact-layout {
       display: grid;
@@ -772,9 +839,11 @@
     .field { display: grid; gap: 6px; }
     .field.mt-2 { margin-top: 1rem; }
     label { font-size: .92rem; color: var(--muted); }
-    input, textarea { width: 100%; color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; outline: none; transition: border-color .2s ease, box-shadow .2s ease; }
+    input, textarea { width: 100%; color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; outline: none; transition: border-color .2s ease, box-shadow .2s ease; font-family: inherit; font-size: inherit; }
     input::placeholder, textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent); }
     input:focus-visible, textarea:focus-visible { box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 60%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, var(--line)); }
+    .form-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .form-actions .btn { flex: 1; }
     .social-btn { --brand: var(--accent); display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font-weight: 600; font-size: .95rem; text-decoration: none; transition: background .2s ease, transform .2s ease, border-color .2s ease; }
     .social-btn:hover { transform: translateY(-2px); background: var(--surface-2); }
     .social-btn.linkedin:hover { color: #0a66c2; border-color: color-mix(in oklab, #0a66c2 30%, transparent) }
@@ -783,4 +852,3 @@
   </style>
 </body>
 </html>
-
