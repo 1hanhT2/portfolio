@@ -1,278 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kanban Board with Timers</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kanban Board (Timed)  Bui Tan Thanh</title>
+    <link rel="icon" type="image/svg+xml" href="./resources/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <style>
-        /* --- Basic Styles (mostly unchanged) --- */
+        /* --- Base / tokens (matches Study page) --- */
         :root {
-            /* Bridge this page to the site theme */
-            --color-background: var(--bg);
-            --color-text: var(--text);
-            --color-primary: var(--accent);
-            --color-secondary: #50e3c2;
-            --color-accent: #f5a623;
-            --color-danger: #d0021b;
-            --color-white: #ffffff;
-            --color-border: #dee2e6;
-            --color-timer: #6c757d; /* Color for timer text */
-
-            --priority-low: #7fbc8c;
-            --priority-medium: #f7b731;
-            --priority-high: #e57373;
+            --bg: #0b0d12;           /* page background */
+            --surface: #11161d;      /* cards, nav */
+            --surface-2: #0f141a;    /* subtle areas */
+            --text: #e5ecf5;         /* primary text */
+            --muted: #9fb0c3;        /* secondary text */
+            --line: #263243;         /* separators */
+            --accent: #7c5cff;       /* brand */
+            --accent-2: #00d4ff;     /* highlight */
+            --ok: #3ae374;
+            --warn: #f5a524;
+            --danger: #ff5470;
+            --radius: 16px;
+            --shadow: 0 10px 30px rgba(0,0,0,.35), 0 4px 8px rgba(0,0,0,.25);
         }
 
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-            background-color: var(--bg);
-            margin: 0;
-            padding: 0;
-            color: var(--color-text);
-            line-height: 1.6;
+            margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            color: var(--text); background: var(--bg); line-height: 1.6; letter-spacing: .2px; overflow-x: hidden;
         }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        a { color: inherit; text-decoration: none; }
 
-        h1 { text-align: center; color: var(--color-primary); margin-bottom: 20px; }
-
-        .add-task-form {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 30px;
-            padding: 15px;
-            background-color: var(--color-white);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
+        /* --- Subtle background (parallax stars + gradient field) --- */
+        .bg-wrap {
+            position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden;
+            background: radial-gradient(1200px 700px at 10% -10%, rgba(124,92,255,.35), transparent 60%),
+                        radial-gradient(900px 600px at 85% 20%, rgba(0,212,255,.25), transparent 60%),
+                        radial-gradient(900px 700px at 50% 110%, rgba(255,84,112,.18), transparent 60%);
+            filter: saturate(110%);
         }
+        .bg-wrap::before { content:""; position:absolute; inset:0; background-image:
+            radial-gradient(1px 1px at 15px 25px, white, transparent),
+            radial-gradient(1px 1px at 75px 95px, white, transparent),
+            radial-gradient(1px 1px at 135px 165px, white, transparent),
+            radial-gradient(1px 1px at 45px 125px, white, transparent),
+            radial-gradient(1px 1px at 185px 55px, white, transparent);
+            background-size:200px 200px; opacity:.3; }
+        .stars { position:absolute; inset:-10vh -10vw; }
+        .stars::before, .stars::after { content:""; position:absolute; inset:0; background-repeat:repeat; background-size:300px 300px; opacity:.35; }
+        .stars::before { background-image: radial-gradient(1px 1px at 20px 30px, #bbd1ff 50%, transparent 51%), radial-gradient(1px 1px at 140px 180px, #9bc9ff 50%, transparent 51%), radial-gradient(1px 1px at 240px 80px, #d6e2ff 50%, transparent 51%); }
+        .stars::after  { background-image: radial-gradient(1px 1px at 70px 60px, #cde0ff 50%, transparent 51%), radial-gradient(1px 1px at 200px 200px, #c3d9ff 50%, transparent 51%); opacity:.2; }
 
-        #new-task-input {
-            padding: 10px 15px;
-            border: 1px solid var(--color-border);
-            border-radius: 5px;
-            font-size: 1rem;
-            flex-grow: 1;
-            min-width: 250px;
+        /* --- Shell & Nav --- */
+        .shell { width: min(1160px, 92vw); margin-inline:auto; }
+        .nav {
+            position: sticky; top: 14px; z-index: 50; display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; padding: 10px 14px; border-radius: 999px; backdrop-filter: blur(10px);
+            background: color-mix(in oklab, var(--surface) 88%, transparent); box-shadow: var(--shadow);
+            border: 1px solid color-mix(in oklab, var(--line) 80%, transparent); margin-bottom: 40px;
         }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+        .brand-dots { display:inline-flex; gap:4px; }
+        .brand-dots span { width:8px; height:8px; border-radius:999px; display:block; background: linear-gradient(135deg, var(--accent), var(--accent-2)); filter: drop-shadow(0 0 6px rgba(124,92,255,.6)); }
+        .nav-links { display:flex; align-items:center; gap: 8px; }
+        .nav a { padding: 8px 12px; border-radius: 10px; color: var(--muted); }
+        .nav a:hover { color: var(--text); background: linear-gradient(135deg, rgba(124,92,255,.12), rgba(0,212,255,.12)); }
 
-         #priority-select {
-            padding: 10px 10px;
-            border: 1px solid var(--color-border);
-            border-radius: 5px;
-            font-size: 0.9rem;
-            background-color: var(--color-white);
-            cursor: pointer;
+        .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding: 10px 14px; border-radius: 12px; font-weight: 600; border: 1px solid transparent; background:
+            linear-gradient(var(--surface), var(--surface)) padding-box,
+            linear-gradient(135deg, var(--accent), var(--accent-2)) border-box; color: var(--text);
+            box-shadow: inset 0 -1px 0 rgba(255,255,255,.05), 0 6px 18px rgba(124,92,255,.25);
         }
-
-        #add-task-button {
-            padding: 10px 20px;
-            background-color: var(--color-primary);
-            color: var(--color-white);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
+        .btn.secondary { background:
+            linear-gradient(var(--surface), var(--surface)) padding-box,
+            linear-gradient(135deg, #304055, #2b3240) border-box; color: var(--text);
         }
+        .btn:hover { transform: translateY(-1px); box-shadow: inset 0 -1px 0 rgba(255,255,255,.06), 0 10px 26px rgba(124,92,255,.33); }
 
-        #add-task-button:hover { background-color: #357abd; }
+        /* --- Page heading --- */
+        h1 { text-align: center; margin: 0 0 18px; font-size: clamp(1.6rem, 2.6vw, 2rem); letter-spacing: .2px;
+            background: linear-gradient(90deg, var(--text), #c7d2fe 30%, #a5b4fc 60%);
+            -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-        .kanban-board {
-            display: flex;
-            justify-content: space-around;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 20px;
+        /* --- Kanban UI --- */
+        .add-task-form { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:10px; margin:0 auto 22px; padding:14px; max-width:760px;
+            background: linear-gradient(180deg, color-mix(in oklab, var(--surface) 92%, transparent), color-mix(in oklab, var(--surface-2) 92%, transparent));
+            border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
         }
+        #new-task-input, #priority-select { padding: 10px 12px; border:1px solid var(--line); border-radius:10px; font-size:1rem; background: var(--surface-2); color: var(--text); }
+        #new-task-input { min-width: 260px; flex:1; }
+        #priority-select { cursor: pointer; }
+        #add-task-button { all: unset; display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; font-weight:600; border:1px solid transparent; background:
+            linear-gradient(var(--surface), var(--surface)) padding-box,
+            linear-gradient(135deg, var(--accent), var(--accent-2)) border-box; color:var(--text); box-shadow: inset 0 -1px 0 rgba(255,255,255,.05), 0 6px 18px rgba(124,92,255,.25); cursor:pointer; }
+        #add-task-button:hover { transform: translateY(-1px); box-shadow: inset 0 -1px 0 rgba(255,255,255,.06), 0 10px 26px rgba(124,92,255,.33); }
 
-        .column {
-            background-color: #e9ecef;
-            border-radius: 8px;
-            padding: 15px;
-            width: 320px;
-            min-height: 450px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-            transition: background-color 0.3s ease;
-        }
+        .kanban-board { display:flex; justify-content:space-around; gap:16px; flex-wrap:wrap; margin-top:10px; }
+        .column { background: linear-gradient(180deg, color-mix(in oklab, var(--surface) 92%, transparent), color-mix(in oklab, var(--surface-2) 92%, transparent));
+            border:1px solid var(--line); border-radius: var(--radius); padding:16px; width:320px; min-height:460px; box-shadow: var(--shadow); display:flex; flex-direction:column; }
+        .column-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:12px; }
+        .column-header h2 { margin:0; color:var(--text); font-size:1.05rem; font-weight:700; }
+        .task-count { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#0b0d12; border-radius:999px; padding:2px 8px; font-size:.8rem; font-weight:800; }
+        .tasks { min-height:150px; flex-grow:1; padding:4px 2px; border-radius:8px; }
 
-        .column-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--color-border);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
+        .task { background-color: var(--surface); border:1px solid var(--line); padding:12px 14px; margin-bottom:12px; border-radius:10px; cursor:grab; box-shadow: var(--shadow);
+            transition: background-color .25s ease, box-shadow .25s ease, transform .1s ease; position:relative; word-wrap:break-word; border-left: 5px solid transparent; }
+        .task:active { cursor: grabbing; transform: scale(.995); }
+        .task.priority-low { border-left-color: var(--ok); }
+        .task.priority-medium { border-left-color: var(--warn); }
+        .task.priority-high { border-left-color: var(--danger); }
+        .task-content { display:block; margin-bottom:6px; cursor:text; }
+        .task-timer-display { display:block; font-size:.85em; color:#a9b7c6; margin-top:4px; min-height:1.2em; }
+        .task-editing input { width:100%; padding:6px 8px; border:1px solid var(--accent-2); border-radius:8px; font:inherit; box-sizing:border-box; margin-bottom:6px; background:var(--surface-2); color:var(--text); }
+        .task .delete-task { position:absolute; top:8px; right:8px; background:#3a4556; color:var(--text); border:none; border-radius:50%; width:22px; height:22px; font-size:14px; line-height:20px; text-align:center; cursor:pointer; opacity:0; transition: opacity .2s ease, background-color .2s ease; z-index:1; }
+        .task:hover .delete-task { opacity:1; }
+        .task .delete-task:hover { background-color:#5b6a82; }
+        .dragging { opacity:.5; transform: rotate(2deg); }
+        .drag-over { background: color-mix(in oklab, var(--surface-2) 70%, transparent); border: 1px dashed var(--accent); }
 
-        .column-header h2 { margin: 0; color: var(--color-text); font-size: 1.1rem; font-weight: 600; }
+        /* Done column tweaks */
+        #done-column .task .task-content { text-decoration: line-through; color: var(--muted); }
 
-        .task-count {
-            background-color: var(--color-primary);
-            color: var(--color-white);
-            border-radius: 10px;
-            padding: 2px 8px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
+        .clear-done-btn { display:block; margin:12px auto 4px; padding:8px 12px; border-radius:10px; font-weight:600; border:1px solid transparent; background:
+            linear-gradient(var(--surface), var(--surface)) padding-box,
+            linear-gradient(135deg, #304055, #2b3240) border-box; color: var(--text); cursor:pointer; }
+        .clear-done-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(0,0,0,.35); }
 
-        .tasks {
-            min-height: 150px;
-            flex-grow: 1;
-            padding: 5px 2px; /* Adjusted padding */
-            border-radius: 4px;
-            transition: background-color 0.2s ease;
-        }
-
-        /* --- Task Styling --- */
-        .task {
-            background-color: var(--color-white);
-            padding: 12px 15px;
-            margin-bottom: 12px;
-            border-radius: 6px;
-            cursor: grab;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            word-wrap: break-word;
-            border-left: 5px solid transparent;
-        }
-
-        .task.priority-low { border-left-color: var(--priority-low); }
-        .task.priority-medium { border-left-color: var(--priority-medium); }
-        .task.priority-high { border-left-color: var(--priority-high); }
-
-        .task-content {
-            display: block; /* Changed to block for better layout with timer */
-            margin-bottom: 5px; /* Space between text and timer */
-            cursor: text;
-        }
-
-        .task-timer-display {
-            display: block; /* Ensure it takes its own line */
-            font-size: 0.85em;
-            color: var(--color-timer);
-            margin-top: 5px;
-            min-height: 1.2em; /* Reserve space even when empty */
-        }
-
-        .task-editing input {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid var(--color-primary);
-            border-radius: 3px;
-            font: inherit;
-            box-sizing: border-box;
-            margin-bottom: 5px; /* Maintain spacing */
-        }
-
-        .task:active { cursor: grabbing; background-color: #f1f3f5; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); }
-
-        .task .delete-task {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #adb5bd;
-            color: var(--color-white);
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 14px;
-            line-height: 20px;
-            text-align: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s ease, background-color 0.2s ease;
-            z-index: 1; /* Ensure button is above content */
-        }
-
-        .task:hover .delete-task { opacity: 1; }
-        .task .delete-task:hover { background-color: var(--color-danger); }
-
-        .dragging { opacity: 0.4; transform: rotate(3deg); }
-        .drag-over { background-color: #d0ebff; border: 2px dashed var(--color-primary); }
-
-        #todo-column { background-color: #e7f5ff; }
-        #inprogress-column { background-color: #fff9db; }
-        #done-column { background-color: #e6fcf5; }
-        #done-column .task { background-color: #d3f9d8; text-decoration: line-through; opacity: 0.8; }
-        #done-column .task .task-content { text-decoration: line-through; } /* Apply strikethrough only to text */
-
-        .clear-done-btn {
-            display: block; margin: 15px auto 5px auto; padding: 8px 15px;
-            background-color: var(--color-secondary); color: var(--color-text);
-            border: none; border-radius: 5px; cursor: pointer; font-size: 0.9rem;
-            transition: background-color 0.3s ease, transform 0.1s ease;
-        }
-        .clear-done-btn:hover { background-color: #3acdab; }
-        .clear-done-btn:active { transform: scale(0.98); }
-
+        /* --- Footer & Cursor blob --- */
+        .footer { color: var(--muted); padding: 40px 0 70px; text-align:center; }
+        .cursor-blob { position: fixed; top: 0; left: 0; width: 260px; height: 260px; border-radius: 50%; pointer-events: none; z-index: -1;
+            background: radial-gradient(closest-side, rgba(124,92,255,.22), rgba(0,212,255,.12), transparent 60%);
+            filter: blur(30px); transform: translate(-50%, -50%); mix-blend-mode: screen; opacity:.7; }
+        @media (max-width: 900px), (pointer: coarse) { .cursor-blob { display: none; } }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>
 <body>
+    <div class="bg-wrap" aria-hidden="true"><div class="stars"></div></div>
+    <div class="cursor-blob" id="blob" aria-hidden="true"></div>
 
-    <main class="shell pattern">
-      <nav class="nav">
-        <a class="brand" href="index.html">
-          <span class="brand-dots"><span></span><span></span><span></span><span></span></span>
-          <span>Bui Tan Thanh</span>
-        </a>
-        <div class="nav-links">
-          <a href="index.html#projects">Projects</a>
-          <a class="btn" href="more-projects.html">More</a>
-        </div>
-      </nav>
-
-      <h1>Kanban Board with Timers</h1>
-
-      <div class="add-task-form">
-        <input type="text" id="new-task-input" placeholder="Enter new task..." aria-label="New task description">
-        <select id="priority-select" aria-label="Task priority">
-            <option value="low">Low Priority</option>
-            <option value="medium" selected>Medium Priority</option>
-            <option value="high">High Priority</option>
-        </select>
-        <button id="add-task-button">Add Task</button>
-      </div>
-
-      <div class="kanban-board">
-        <div class="column" id="todo-column">
-            <div class="column-header">
-                <h2>To Do</h2>
-                <span class="task-count" id="todo-count">0</span>
+    <main class="shell">
+        <nav class="nav">
+            <a class="brand" href="index.html">
+                <span class="brand-dots"><span></span><span></span><span></span><span></span></span>
+                <span>Bui Tan Thanh</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html#journey">Journey</a>
+                <a href="index.html#achievements">Achievements</a>
+                <a href="index.html#features">Features</a>
+                <a href="index.html#projects">Projects</a>
+                <a class="btn" href="index.html#contact">Get in touch</a>
             </div>
-            <div class="tasks" id="todo-tasks" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
-        </div>
-        <div class="column" id="inprogress-column">
-            <div class="column-header">
-                <h2>In Progress</h2>
-                <span class="task-count" id="inprogress-count">0</span>
-            </div>
-            <div class="tasks" id="inprogress-tasks" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
-        </div>
-        <div class="column" id="done-column">
-             <div class="column-header">
-                <h2>Done</h2>
-                <span class="task-count" id="done-count">0</span>
-            </div>
-            <div class="tasks" id="done-tasks" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
-             <button class="clear-done-btn" id="clear-done-button">Clear All Done Tasks</button>
-        </div>
-      </div>
+        </nav>
 
-      <footer class="footer">© <span id="year"></span> Bui Tan Thanh</footer>
+        <h1>Kanban Board (Timed)</h1>
+
+        <div class="add-task-form">
+            <input type="text" id="new-task-input" placeholder="Enter new task..." aria-label="New task description">
+            <select id="priority-select" aria-label="Task priority">
+                <option value="low">Low Priority</option>
+                <option value="medium" selected>Medium Priority</option>
+                <option value="high">High Priority</option>
+            </select>
+            <button id="add-task-button">Add Task</button>
+        </div>
+
+        <div class="kanban-board">
+            <div class="column" id="todo-column">
+                <div class="column-header">
+                    <h2>To Do</h2>
+                    <span class="task-count" id="todo-count">0</span>
+                </div>
+                <div class="tasks" id="todo-tasks" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+            </div>
+            <div class="column" id="inprogress-column">
+                <div class="column-header">
+                    <h2>In Progress</h2>
+                    <span class="task-count" id="inprogress-count">0</span>
+                </div>
+                <div class="tasks" id="inprogress-tasks" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+            </div>
+            <div class="column" id="done-column">
+                <div class="column-header">
+                    <h2>Done</h2>
+                    <span class="task-count" id="done-count">0</span>
+                </div>
+                <div class="tasks" id="done-tasks" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+                <button class="clear-done-btn" id="clear-done-button">Clear All Done Tasks</button>
+            </div>
+        </div>
+
+        <footer class="footer">c <span id="year"></span> Bui Tan Thanh</footer>
     </main>
+
+    <script>
+      // Year + ambient cursor blob
+      document.getElementById('year').textContent = new Date().getFullYear();
+      const blobEl = document.getElementById('blob');
+      let bx = window.innerWidth / 2, by = window.innerHeight / 2;
+      window.addEventListener('pointermove', (e) => { bx = e.clientX; by = e.clientY; }, { passive: true });
+      const tick = () => {
+        const curX = parseFloat(blobEl.style.left || bx), curY = parseFloat(blobEl.style.top || by);
+        blobEl.style.left = (curX + (bx - curX) * 0.12) + 'px';
+        blobEl.style.top  = (curY + (by - curY) * 0.12) + 'px';
+        requestAnimationFrame(tick);
+      };
+      tick();
+    </script>
 
     <script>
         const taskInput = document.getElementById('new-task-input');
@@ -286,376 +225,214 @@
 
         // --- Time Formatting ---
         function formatElapsedTime(ms) {
-            if (!ms || ms <= 0) return ''; // Don't display if 0 or invalid
-
+            if (!ms || ms <= 0) return '';
             let seconds = Math.floor(ms / 1000);
             let minutes = Math.floor(seconds / 60);
             let hours = Math.floor(minutes / 60);
-
             seconds = seconds % 60;
             minutes = minutes % 60;
-
             let parts = [];
             if (hours > 0) parts.push(`${hours}h`);
             if (minutes > 0) parts.push(`${minutes}m`);
-            if (seconds > 0 || parts.length === 0) parts.push(`${seconds}s`); // Show seconds if <1m or only unit
-
-            return `⏱️ ${parts.join(' ')}`; // Use an icon
+            if (seconds > 0 || parts.length === 0) parts.push(`${seconds}s`);
+            return parts.join(' ');
         }
 
-
-        // --- Task Creation & Rendering ---
+        // --- Task Creation ---
         function createTaskElement(task) {
             const taskElement = document.createElement('div');
             taskElement.classList.add('task', `priority-${task.priority}`);
             taskElement.setAttribute('draggable', 'true');
-            taskElement.setAttribute('id', task.id);
+            taskElement.id = task.id;
 
-            // Task Content Span (for text editing)
+            // Content
             const contentSpan = document.createElement('span');
             contentSpan.classList.add('task-content');
             contentSpan.textContent = task.text;
             contentSpan.addEventListener('dblclick', () => enableEditing(taskElement, task));
             taskElement.appendChild(contentSpan);
 
-             // Timer Display Span
+            // Timer display
             const timerSpan = document.createElement('span');
             timerSpan.classList.add('task-timer-display');
-            // Display saved time immediately if task is done or has elapsed time
-             if (task.column === 'done-tasks' || (task.elapsedTime && task.elapsedTime > 0)) {
+            if (task.column === 'done-tasks' || (task.elapsedTime && task.elapsedTime > 0)) {
                 timerSpan.textContent = formatElapsedTime(task.elapsedTime);
-             }
-             taskElement.appendChild(timerSpan);
+            }
+            taskElement.appendChild(timerSpan);
 
             // Delete button
             const deleteButton = document.createElement('button');
             deleteButton.classList.add('delete-task');
             deleteButton.innerHTML = '&times;';
             deleteButton.setAttribute('aria-label', 'Delete task');
-            deleteButton.onclick = (event) => {
-                event.stopPropagation();
-                deleteTask(task.id);
-            };
+            deleteButton.onclick = (event) => { event.stopPropagation(); deleteTask(task.id); };
             taskElement.appendChild(deleteButton);
 
-            // Drag and Drop Event Listeners
+            // DnD
             taskElement.addEventListener('dragstart', dragStart);
             taskElement.addEventListener('dragend', dragEnd);
-
             return taskElement;
         }
 
-        // --- Editing Task (Unchanged) ---
         function enableEditing(taskElement, task) {
             const contentSpan = taskElement.querySelector('.task-content');
-             const timerSpan = taskElement.querySelector('.task-timer-display'); // Keep reference
+            const timerSpan = taskElement.querySelector('.task-timer-display');
             if (!contentSpan || taskElement.classList.contains('task-editing')) return;
-
             const currentText = task.text;
             taskElement.classList.add('task-editing');
-
             const input = document.createElement('input');
             input.type = 'text';
             input.value = currentText;
-
             contentSpan.style.display = 'none';
-            // Insert input before the timer span
             taskElement.insertBefore(input, timerSpan);
             input.focus();
 
             const saveEdit = () => {
                 const newText = input.value.trim();
                 if (newText && newText !== currentText) {
-                    task.text = newText;
-                    contentSpan.textContent = newText;
-                    saveTasks();
-                    console.log(`Task ${task.id} updated.`);
-                } else {
-                     contentSpan.textContent = currentText;
-                }
-                input.remove();
-                contentSpan.style.display = '';
-                taskElement.classList.remove('task-editing');
+                    task.text = newText; contentSpan.textContent = newText; saveTasks();
+                } else { contentSpan.textContent = currentText; }
+                input.remove(); contentSpan.style.display = ''; taskElement.classList.remove('task-editing');
             };
-
             input.addEventListener('blur', saveEdit);
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    input.blur();
-                }
-            });
-         }
+            input.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } });
+        }
 
         // --- Add Task ---
         function addTask() {
             const taskText = taskInput.value.trim();
             const taskPriority = prioritySelect.value;
             if (taskText === '') return;
-
-            const newTask = {
-                id: 'task-' + Date.now(),
-                text: taskText,
-                priority: taskPriority,
-                column: 'todo-tasks', // Default column
-                startTime: null,      // Timestamp when first moved to In Progress
-                elapsedTime: 0,       // Total time spent in In Progress (ms)
-                lastStartTime: null   // Timestamp when timer was last started/resumed
-            };
-
+            const newTask = { id: 'task-' + Date.now(), text: taskText, priority: taskPriority, column: 'todo-tasks', startTime: null, elapsedTime: 0, lastStartTime: null };
             tasks.push(newTask);
             const taskElement = createTaskElement(newTask);
             document.getElementById('todo-tasks').appendChild(taskElement);
-
-            taskInput.value = '';
-            prioritySelect.value = 'medium';
-            updateTaskCounts();
-            saveTasks();
+            taskInput.value = ''; prioritySelect.value = 'medium'; updateTaskCounts(); saveTasks();
         }
 
         // --- Drag and Drop ---
         function dragStart(event) {
-            draggedTask = event.target;
-            event.dataTransfer.setData('text/plain', event.target.id);
-            setTimeout(() => {
-                if (draggedTask) draggedTask.classList.add('dragging');
-            }, 0);
+            draggedTask = event.target; event.dataTransfer.setData('text/plain', event.target.id);
+            setTimeout(() => { if (draggedTask) draggedTask.classList.add('dragging'); }, 0);
         }
-
-        function dragEnd(event) {
-             if (draggedTask) {
-                draggedTask.classList.remove('dragging');
-            }
-             columns.forEach(column => column.classList.remove('drag-over'));
-            draggedTask = null;
+        function dragEnd() {
+            if (draggedTask) draggedTask.classList.remove('dragging');
+            columns.forEach(column => column.classList.remove('drag-over')); draggedTask = null;
         }
-
         function allowDrop(event) {
             event.preventDefault();
             const targetColumn = event.target.closest('.tasks');
-             if (targetColumn && targetColumn !== draggedTask?.parentElement) {
-                 columns.forEach(col => col.classList.remove('drag-over'));
-                 targetColumn.classList.add('drag-over');
+            if (targetColumn && targetColumn !== draggedTask?.parentElement) {
+                columns.forEach(col => col.classList.remove('drag-over')); targetColumn.classList.add('drag-over');
             }
         }
-
         document.querySelectorAll('.tasks').forEach(column => {
             column.addEventListener('dragleave', (event) => {
-                 const rect = event.currentTarget.getBoundingClientRect();
-                 if (event.clientX < rect.left || event.clientX >= rect.right || event.clientY < rect.top || event.clientY >= rect.bottom) {
+                const rect = event.currentTarget.getBoundingClientRect();
+                if (event.clientX < rect.left || event.clientX >= rect.right || event.clientY < rect.top || event.clientY >= rect.bottom) {
                     event.currentTarget.classList.remove('drag-over');
                 }
             });
         });
-
         function drop(event) {
             event.preventDefault();
             const targetColumnEl = event.target.closest('.tasks');
-            if (!targetColumnEl || !draggedTask) {
-                 cleanupDragState();
-                 return;
-            }
-
+            if (!targetColumnEl || !draggedTask) { cleanupDragState(); return; }
             const taskId = event.dataTransfer.getData('text/plain');
-            // Ensure the element being dropped is the one we started dragging
-            if (draggedTask.id !== taskId) {
-                console.warn("Mismatched task ID during drop.");
-                cleanupDragState();
-                return;
-            }
-
-            const taskElement = draggedTask; // Use the stored element
+            if (draggedTask.id !== taskId) { console.warn('Mismatched task ID during drop.'); cleanupDragState(); return; }
+            const taskElement = draggedTask;
             const previousColumnId = taskElement.parentElement.id;
             const targetColumnId = targetColumnEl.id;
 
-             // --- Timer Logic ---
-             const taskIndex = tasks.findIndex(t => t.id === taskId);
-             if (taskIndex > -1) {
-                 const task = tasks[taskIndex];
-                 const now = Date.now();
-
-                 // Moving OUT OF In Progress
-                 if (previousColumnId === 'inprogress-tasks' && targetColumnId !== 'inprogress-tasks') {
-                     if (task.lastStartTime) { // Timer was running
-                         const delta = now - task.lastStartTime;
-                         task.elapsedTime += delta;
-                         task.lastStartTime = null; // Pause timer
-                         console.log(`Task ${taskId}: Paused timer. Added ${delta}ms. Total: ${task.elapsedTime}ms`);
-                     }
-                 }
-
-                 // Moving INTO In Progress
-                 if (targetColumnId === 'inprogress-tasks' && previousColumnId !== 'inprogress-tasks') {
-                     task.lastStartTime = now; // Start/Resume timer
-                     if (task.startTime === null) { // First time in progress
-                         task.startTime = now;
-                     }
-                     console.log(`Task ${taskId}: Started/Resumed timer at ${now}`);
-                 }
-
-                  // --- Update Timer Display on Drop (especially for 'Done') ---
-                 const timerSpan = taskElement.querySelector('.task-timer-display');
-                 if (timerSpan) {
+            // --- Timer Logic ---
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex > -1) {
+                const task = tasks[taskIndex];
+                const now = Date.now();
+                if (previousColumnId === 'inprogress-tasks' && targetColumnId !== 'inprogress-tasks') {
+                    if (task.lastStartTime) { const delta = now - task.lastStartTime; task.elapsedTime += delta; task.lastStartTime = null; }
+                }
+                if (targetColumnId === 'inprogress-tasks' && previousColumnId !== 'inprogress-tasks') {
+                    task.lastStartTime = now; if (task.startTime === null) { task.startTime = now; }
+                }
+                const timerSpan = taskElement.querySelector('.task-timer-display');
+                if (timerSpan) {
                     if (targetColumnId === 'done-tasks') {
-                         // Ensure elapsedTime is final if moved directly from In Progress
-                        if (previousColumnId === 'inprogress-tasks' && task.lastStartTime) {
-                             // Recalculate final time if needed (should have been done above)
-                             // task.elapsedTime += (now - task.lastStartTime); // This line is redundant if logic above is correct
-                             task.lastStartTime = null; // Ensure it's null
-                        }
-                         timerSpan.textContent = formatElapsedTime(task.elapsedTime);
-                         console.log(`Task ${taskId}: Moved to Done. Final time: ${formatElapsedTime(task.elapsedTime)}`);
-                     } else if (targetColumnId !== 'inprogress-tasks' && task.elapsedTime > 0) {
-                         // Show accumulated time if moved back to 'To Do' but has time logged
-                         timerSpan.textContent = formatElapsedTime(task.elapsedTime);
-                     } else if (targetColumnId !== 'inprogress-tasks'){
-                         // Clear display if moved to 'To Do' with no time logged yet
-                         timerSpan.textContent = '';
-                     }
-                      // (We are not showing a *live* running timer in In Progress for simplicity)
-                 }
+                        if (previousColumnId === 'inprogress-tasks' && task.lastStartTime) { task.lastStartTime = null; }
+                        timerSpan.textContent = formatElapsedTime(task.elapsedTime);
+                    } else if (targetColumnId !== 'inprogress-tasks' && task.elapsedTime > 0) {
+                        timerSpan.textContent = formatElapsedTime(task.elapsedTime);
+                    } else if (targetColumnId !== 'inprogress-tasks') {
+                        timerSpan.textContent = '';
+                    }
+                }
+                task.column = targetColumnId;
+            } else { console.error(`Task data not found for ID: ${taskId} during drop`); }
+            // --- End Timer Logic ---
 
-
-                 // Update task's column property *after* timer logic
-                 task.column = targetColumnId;
-
-             } else {
-                 console.error(`Task data not found for ID: ${taskId} during drop`);
-             }
-             // --- End Timer Logic ---
-
-
-            // Move the DOM element
             targetColumnEl.appendChild(taskElement);
-            targetColumnEl.classList.remove('drag-over');
+            columns.forEach(column => column.classList.remove('drag-over'));
+            updateTaskCounts(); saveTasks();
 
-            // Trigger confetti only if moving INTO the Done column
-            if (targetColumnId === 'done-tasks' && previousColumnId !== 'done-tasks') {
-                 triggerConfetti();
-             }
-
-            updateTaskCounts();
-            saveTasks(); // Save the updated state including timer data
+            if (targetColumnId === 'done-tasks') { triggerConfetti(); }
             cleanupDragState();
         }
-
-        function cleanupDragState() {
-             if (draggedTask) {
-                draggedTask.classList.remove('dragging');
-             }
-             columns.forEach(col => col.classList.remove('drag-over'));
-            draggedTask = null;
-        }
+        function cleanupDragState() { columns.forEach(c => c.classList.remove('drag-over')); draggedTask = null; }
 
         // --- Deletion ---
         function deleteTask(taskId) {
             const task = tasks.find(t => t.id === taskId);
-            if (!confirm(`Are you sure you want to delete task "${task?.text || taskId}"?`)) {
-                 return;
-            }
-
+            if (!confirm(`Are you sure you want to delete task "${task?.text || taskId}"?`)) return;
             const taskElement = document.getElementById(taskId);
-            if (taskElement) {
-                taskElement.remove();
-                tasks = tasks.filter(t => t.id !== taskId); // Remove from array
-                updateTaskCounts();
-                saveTasks(); // Update localStorage
-                console.log(`Deleted task: ${taskId}`);
-            }
+            if (taskElement) { taskElement.remove(); tasks = tasks.filter(t => t.id !== taskId); updateTaskCounts(); saveTasks(); }
         }
 
         // --- Clear Done Tasks ---
         function clearDoneTasks() {
             const doneTasksContainer = document.getElementById('done-tasks');
             const doneTaskElements = doneTasksContainer.querySelectorAll('.task');
-            if (doneTaskElements.length === 0) {
-                alert("There are no tasks in the 'Done' column to clear.");
-                return;
-            }
+            if (doneTaskElements.length === 0) { alert("There are no tasks in the 'Done' column to clear."); return; }
             if (confirm(`Are you sure you want to clear all ${doneTaskElements.length} tasks from the 'Done' column? This cannot be undone.`)) {
                 const doneTaskIds = Array.from(doneTaskElements).map(task => task.id);
                 doneTaskElements.forEach(task => task.remove());
-                tasks = tasks.filter(task => !doneTaskIds.includes(task.id)); // Filter out
-                updateTaskCounts();
-                saveTasks();
-                console.log("Cleared all tasks from 'Done' column.");
+                tasks = tasks.filter(task => !doneTaskIds.includes(task.id));
+                updateTaskCounts(); saveTasks();
             }
         }
 
-        // --- Task Count Update (Unchanged) ---
+        // --- Task Count Update ---
         function updateTaskCounts() {
             const counts = { 'todo-tasks': 0, 'inprogress-tasks': 0, 'done-tasks': 0 };
-            columns.forEach(column => {
-                counts[column.id] = column.getElementsByClassName('task').length;
-            });
+            columns.forEach(column => { counts[column.id] = column.getElementsByClassName('task').length; });
             document.getElementById('todo-count').textContent = counts['todo-tasks'];
             document.getElementById('inprogress-count').textContent = counts['inprogress-tasks'];
             document.getElementById('done-count').textContent = counts['done-tasks'];
         }
 
-        // --- Confetti (Unchanged) ---
-        function triggerConfetti() {
-            confetti({ particleCount: 180, spread: 100, origin: { y: 0.6 }, colors: ['#4a90e2', '#50e3c2', '#f5a623', '#ffffff', '#f8f9fa'] });
-        }
+        // --- Confetti ---
+        function triggerConfetti() { confetti({ particleCount: 180, spread: 100, origin: { y: 0.6 }, colors: ['#7c5cff', '#00d4ff', '#3ae374', '#ffffff'] }); }
 
         // --- Local Storage ---
         function saveTasks() {
             try {
-                // Note: We don't save lastStartTime, as timers don't persist across reloads
-                 const tasksToSave = tasks.map(t => ({
-                    id: t.id,
-                    text: t.text,
-                    priority: t.priority,
-                    column: t.column,
-                    startTime: t.startTime,
-                    elapsedTime: t.elapsedTime
-                 }));
+                const tasksToSave = tasks.map(t => ({ id: t.id, text: t.text, priority: t.priority, column: t.column, startTime: t.startTime, elapsedTime: t.elapsedTime }));
                 localStorage.setItem('kanbanTasks_timed', JSON.stringify(tasksToSave));
-                console.log("Tasks saved:", tasksToSave.length);
-            } catch (e) {
-                console.error("Error saving tasks to localStorage:", e);
-                alert("Could not save tasks. Local storage might be full or unavailable.");
-            }
+            } catch (e) { console.error('Error saving tasks to localStorage:', e); alert('Could not save tasks. Local storage might be full or unavailable.'); }
         }
-
         function loadTasks() {
             const savedTasks = localStorage.getItem('kanbanTasks_timed');
-            tasks = []; // Start with empty array
+            tasks = [];
             if (savedTasks) {
                 try {
                     const loadedData = JSON.parse(savedTasks);
-                    // Restore tasks, ensuring all needed fields exist
-                    tasks = loadedData.map(t => ({
-                        ...t, // Spread loaded data
-                        priority: t.priority || 'medium', // Default priority if missing
-                        startTime: t.startTime || null,
-                        elapsedTime: t.elapsedTime || 0,
-                        lastStartTime: null // Always null on load
-                    }));
-                    console.log("Tasks loaded:", tasks.length);
-
-                    columns.forEach(column => column.innerHTML = ''); // Clear columns before rendering
-
+                    tasks = loadedData.map(t => ({ ...t, priority: t.priority || 'medium', startTime: t.startTime || null, elapsedTime: t.elapsedTime || 0, lastStartTime: null }));
+                    columns.forEach(column => column.innerHTML = '');
                     tasks.forEach(task => {
                         const taskElement = createTaskElement(task);
                         const columnElement = document.getElementById(task.column);
-                        if (columnElement) {
-                            columnElement.appendChild(taskElement);
-                        } else {
-                            console.warn(`Column ${task.column} not found for task ${task.id}, placing in 'To Do'.`);
-                            document.getElementById('todo-tasks').appendChild(taskElement);
-                            task.column = 'todo-tasks'; // Fix data
-                         }
+                        if (columnElement) columnElement.appendChild(taskElement); else { document.getElementById('todo-tasks').appendChild(taskElement); task.column = 'todo-tasks'; }
                     });
-                    // Optional: Re-save if any tasks were moved to 'To Do'
-                    // saveTasks();
-                 } catch(e) {
-                    console.error("Error parsing tasks from localStorage:", e);
-                    localStorage.removeItem('kanbanTasks_timed'); // Clear potentially corrupted data
-                    tasks = [];
-                 }
-            } else {
-                console.log("No tasks found in localStorage.");
+                } catch(e) { console.error('Error parsing tasks from localStorage:', e); localStorage.removeItem('kanbanTasks_timed'); tasks = []; }
             }
             updateTaskCounts();
         }
@@ -664,11 +441,9 @@
         addTaskButton.addEventListener('click', addTask);
         taskInput.addEventListener('keypress', function(event) { if (event.key === 'Enter') addTask(); });
         clearDoneButton.addEventListener('click', clearDoneTasks);
-
-        // Load tasks on page load
-        document.addEventListener('DOMContentLoaded', () => { loadTasks(); document.getElementById('year').textContent = new Date().getFullYear(); });
-
+        document.addEventListener('DOMContentLoaded', () => { loadTasks(); });
     </script>
 
 </body>
 </html>
+

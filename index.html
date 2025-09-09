@@ -716,8 +716,8 @@
         statusEl.textContent = '';
         statusEl.style.color = 'var(--muted)';
 
-        const apiKey = ""; // API key is handled by the environment
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+        // Route requests through server-side proxy on InfinityFree
+        const apiUrl = '/ai-helper.php';
 
         const systemPrompt = "You are a friendly and professional assistant. Your task is to help a visitor write a contact message to Bui Tan Thanh, a talented student specializing in English and front-end development. Take the user's keywords or draft and expand it into a polished, concise, and friendly message. Make it sound natural, not overly corporate. Start the message with 'Hi Thanh,'.";
         const userQuery = `Here are my notes, please help me write a full message: "${userText}"`;
@@ -733,7 +733,7 @@
           const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({ text: userText })
           });
 
           if (!response.ok) {
@@ -744,9 +744,9 @@
 
           const result = await response.json();
           const candidate = result.candidates?.[0];
+          const generatedText = candidate?.content?.parts?.[0]?.text || result.text;
 
-          if (candidate && candidate.content?.parts?.[0]?.text) {
-            const generatedText = candidate.content.parts[0].text;
+          if (generatedText) {
             messageTextarea.value = generatedText;
             statusEl.textContent = '✨ Message draft generated!';
             // Auto-resize textarea to fit content
@@ -758,7 +758,7 @@
           }
 
         } catch (error) {
-          console.error("Gemini API call failed:", error);
+          console.error("AI helper call failed:", error);
           statusEl.textContent = 'Sorry, the AI assistant is unavailable right now.';
           statusEl.style.color = 'var(--danger)';
         } finally {
