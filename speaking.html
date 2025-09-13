@@ -162,6 +162,11 @@
         }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
+        /* Ensure skip button uses Inter font */
+        #skip-wait-button {
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+
         /* --- Footer & Cursor --- */
         .footer { color: var(--muted); padding: 40px 0 70px; text-align: center; }
         .cursor-blob { position: fixed; top: 0; left: 0; width: 260px; height: 260px; border-radius: 50%; pointer-events: none; z-index: -1; background: radial-gradient(closest-side, rgba(124, 92, 255, .22), rgba(0, 212, 255, .12), transparent 60%); filter: blur(30px); transform: translate(-50%, -50%); mix-blend-mode: screen; opacity: .7; }
@@ -203,7 +208,8 @@
                 <p>Your number is: <span id="random-number-display"></span></p>
                 <p>Recording will start in:</p>
                 <div id="wait-timer-display" class="timer-display">--:--</div>
-                <p style="font-size: .9em;">(Microphone access will be requested after this timer)</p>
+                <button id="skip-wait-button" class="btn secondary mt-2" type="button">Skip 5-minute wait</button>
+                <p style="font-size: .9em;">(Microphone access is requested now so you’re ready)</p>
             </div>
 
             <div id="record-section" class="app-section">
@@ -211,6 +217,7 @@
                 <p id="status-message">Initializing...</p>
                 <p>Time remaining:</p>
                 <div id="record-timer-display" class="timer-display">--:--</div>
+                <canvas id="visualizer" width="900" height="140" style="width:100%; height:140px; display:block; margin-top:10px; border-radius:12px; background: color-mix(in oklab, var(--surface-2) 92%, transparent);"></canvas>
             </div>
 
             <div id="download-section" class="app-section">
@@ -259,6 +266,7 @@
 
         const userNameInput = document.getElementById('user-name');
         const startButton = document.getElementById('start-button');
+        const skipWaitButton = document.getElementById('skip-wait-button');
         const randomNumberDisplay = document.getElementById('random-number-display');
         const waitTimerDisplay = document.getElementById('wait-timer-display');
         const recordTimerDisplay = document.getElementById('record-timer-display');
@@ -273,6 +281,13 @@
         let mediaRecorder = null;
         let audioChunks = [];
         let audioStream = null;
+        let recordingStarted = false;
+        // Visualizer / audio graph
+        let audioContext = null;
+        let analyser = null;
+        let dataArray = null;
+        let vizRAF = null;
+        let mediaStreamSource = null;
 
         function showSection(sectionName) {
             Object.values(sections).forEach(section => {
@@ -315,13 +330,116 @@
             }, 1000);
         }
 
+        async function ensureMicrophone() {
+            try {
+                if (!audioStream) {
+                    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                }
+                return audioStream;
+            } catch (err) {
+                console.error("Error accessing media devices:", err);
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    displayError('Microphone access denied. Please allow microphone access in your browser settings and refresh the page.');
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    displayError('No microphone found. Please ensure a microphone is connected and enabled.');
+                } else {
+                    displayError(`Could not access microphone: ${err.name} - ${err.message}`);
+                }
+                throw err;
+            }
+        }
+
+        function setupAudioGraph(stream) {
+            if (!audioContext) {
+                const AC = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AC();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            if (!mediaStreamSource) {
+                mediaStreamSource = audioContext.createMediaStreamSource(stream);
+            }
+            if (!analyser) {
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+            }
+            mediaStreamSource.connect(analyser);
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+
+        function startVisualizer() {
+            const canvas = document.getElementById('visualizer');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const cssW = canvas.clientWidth;
+            const cssH = canvas.clientHeight;
+            if (canvas.width !== Math.floor(cssW * dpr)) {
+                canvas.width = Math.floor(cssW * dpr);
+                canvas.height = Math.floor(cssH * dpr);
+                ctx.setTransform(1,0,0,1,0,0);
+                ctx.scale(dpr, dpr);
+            }
+
+            const draw = () => {
+                if (!analyser || !dataArray) return;
+                analyser.getByteTimeDomainData(dataArray);
+                ctx.clearRect(0, 0, cssW, cssH);
+
+                // Subtle grid lines
+                ctx.strokeStyle = 'rgba(159, 176, 195, 0.12)';
+                ctx.lineWidth = 1;
+                for (let y = 0; y <= cssH; y += 28) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y + 0.5);
+                    ctx.lineTo(cssW, y + 0.5);
+                    ctx.stroke();
+                }
+
+                // Waveform
+                ctx.lineWidth = 2;
+                const grad = ctx.createLinearGradient(0, 0, cssW, 0);
+                grad.addColorStop(0, '#7c5cff');
+                grad.addColorStop(1, '#00d4ff');
+                ctx.strokeStyle = grad;
+                ctx.beginPath();
+                const slice = cssW / dataArray.length;
+                for (let i = 0; i < dataArray.length; i++) {
+                    const v = dataArray[i] / 128.0; // 0..2
+                    const y = (v * cssH) / 2;       // center around mid
+                    const x = i * slice;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                vizRAF = requestAnimationFrame(draw);
+            };
+            cancelAnimationFrame(vizRAF);
+            vizRAF = requestAnimationFrame(draw);
+        }
+
+        function stopVisualizer() {
+            if (vizRAF) cancelAnimationFrame(vizRAF);
+            vizRAF = null;
+            const canvas = document.getElementById('visualizer');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
         async function startRecordingProcess() {
+            if (recordingStarted) return;
+            recordingStarted = true;
             showSection('record');
             statusMessage.textContent = 'Requesting microphone access...';
             statusMessage.classList.remove('recording');
 
             try {
-                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                await ensureMicrophone();
+                setupAudioGraph(audioStream);
                 statusMessage.textContent = 'Microphone accessed. Starting recording...';
                 mediaRecorder = new MediaRecorder(audioStream);
                 audioChunks = [];
@@ -334,6 +452,7 @@
                     clearInterval(recordIntervalId);
                     statusMessage.textContent = 'Recording finished. Processing audio...';
                     statusMessage.classList.remove('recording');
+                    stopVisualizer();
 
                     if (audioChunks.length === 0) {
                         displayError("No audio data was recorded. Please check microphone permissions and try again.");
@@ -351,6 +470,7 @@
 
                     showSection('download');
                     if (audioStream) audioStream.getTracks().forEach(track => track.stop());
+                    if (audioContext && audioContext.state !== 'closed') audioContext.close();
                 };
 
                 mediaRecorder.onerror = (event) => displayError(`Recording error: ${event.error.name} - ${event.error.message}`);
@@ -358,6 +478,7 @@
                 mediaRecorder.start();
                 statusMessage.textContent = 'RECORDING';
                 statusMessage.classList.add('recording');
+                startVisualizer();
                 startRecordTimer();
 
                 setTimeout(() => {
@@ -365,14 +486,7 @@
                 }, RECORD_DURATION_SECONDS * 1000);
 
             } catch (err) {
-                console.error("Error accessing media devices:", err);
-                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                    displayError('Microphone access denied. Please allow microphone access in your browser settings and refresh the page.');
-                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-                    displayError('No microphone found. Please ensure a microphone is connected and enabled.');
-                } else {
-                    displayError(`Could not access microphone: ${err.name} - ${err.message}`);
-                }
+                // Error already handled in ensureMicrophone
             }
         }
 
@@ -386,7 +500,7 @@
             }, 1000);
         }
 
-        startButton.addEventListener('click', () => {
+        startButton.addEventListener('click', async () => {
             userName = userNameInput.value.trim();
             if (!userName) {
                 alert('Please enter your name.');
@@ -398,7 +512,20 @@
             randomNumber = Math.floor(Math.random() * 10) + 1;
             randomNumberDisplay.textContent = randomNumber;
             showSection('wait');
+            // Ask for microphone access now (before the 5-minute wait)
+            try { await ensureMicrophone(); } catch (_) { return; }
             startWaitTimer();
+        });
+
+        // Allow skipping the wait timer
+        skipWaitButton.addEventListener('click', () => {
+            if (recordingStarted) return;
+            if (waitIntervalId) {
+                clearInterval(waitIntervalId);
+                waitIntervalId = null;
+            }
+            skipWaitButton.disabled = true;
+            startRecordingProcess();
         });
 
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
