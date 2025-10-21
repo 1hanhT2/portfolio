@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc mừng 20/10 - Gia Hân 🌸</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        html::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Ambient gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 105, 180, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(186, 85, 211, 0.15) 0%, transparent 50%);
+            animation: ambientMove 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes ambientMove {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-5%, 5%); }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 182, 193, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 700px;
+            width: 100%;
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 60px 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: fadeInScale 0.8s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: floatIcon 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.5));
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #ba55d3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1em;
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .sparkle {
+            display: inline-block;
+            animation: sparkleRotate 2s linear infinite;
+        }
+
+        @keyframes sparkleRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .message-card {
+            background: rgba(30, 30, 30, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 35px;
+            margin: 30px 0;
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            box-shadow: 0 8px 32px rgba(255, 105, 180, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.05) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .message-card p {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.9;
+            font-size: 1.05em;
+            font-weight: 300;
+            position: relative;
+        }
+
+        .greeting {
+            font-weight: 500;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 35px 0;
+        }
+
+        .glass-button {
+            position: relative;
+            background: rgba(255, 105, 180, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            color: #fff;
+            padding: 16px 35px;
+            font-size: 1em;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .glass-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255, 105, 180, 0.3) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            border-radius: 50%;
+        }
+
+        .glass-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+            border-color: rgba(255, 105, 180, 0.5);
+            background: rgba(255, 105, 180, 0.15);
+        }
+
+        .glass-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .glass-button:active {
+            transform: translateY(-1px);
+        }
+
+        .hidden-card {
+            display: none;
+            background: rgba(186, 85, 211, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(186, 85, 211, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 25px 0;
+            animation: revealCard 0.5s ease-out;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+            line-height: 1.8;
+            box-shadow: 0 8px 32px rgba(186, 85, 211, 0.2);
+        }
+
+        @keyframes revealCard {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .signature {
+            text-align: center;
+            margin-top: 45px;
+            padding-top: 35px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95em;
+            font-weight: 300;
+        }
+
+        .date {
+            color: rgba(255, 182, 193, 0.8);
+            font-weight: 400;
+            margin-top: 8px;
+        }
+
+        /* Animation effects */
+        .emoji-rain-item {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 30px;
+            animation: fallDown 4s linear forwards;
+        }
+
+        @keyframes fallDown {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 30px;
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .icon {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">🌸</div>
+            <h1>Chúc Mừng 20/10</h1>
+            <div class="subtitle">
+                Gửi đến Gia Hân <span class="sparkle">✨</span>
+            </div>
+        </div>
+
+        <div class="message-card">
+            <p class="greeting">Chào Gia Hân,</p>
+            <br>
+            <p>Tuy không quen biết em nhiều lắm nhưng nhân dịp ngày Phụ nữ Việt Nam 20/10, anh muốn gửi đến em những lời chúc chân thành! 💖</p>
+            <br>
+            <p>Chúc em luôn giữ được sự kín đáo và tinh tế của mình, tiếp tục phát triển theo cách riêng và gặp nhiều may mắn trong cuộc sống. Mong rằng em sẽ luôn mạnh mẽ và tự tin theo cách riêng của mình!</p>
+            <br>
+            <p>Hãy luôn là chính mình và tiếp tục tỏa sáng nhé! 🌟</p>
+        </div>
+
+        <div class="button-group">
+            <button class="glass-button" onclick="revealMessage()">
+                🎁 Nhấn để mở quà
+            </button>
+            <button class="glass-button" onclick="createFlowerRain()">
+                ✨ Tạo mưa hoa
+            </button>
+        </div>
+
+        <div id="hiddenMessage" class="hidden-card">
+            🎉 Đặc biệt hơn nữa, chúc em sẽ đạt được kết quả học tập mình mong muốn trong cuộc thi HSGQG nha 💝
+        </div>
+
+        <div class="signature">
+            Với tất cả tình cảm
+            <div class="date">🌹 20/10/2025 🌹</div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animation = `float ${5 + Math.random() * 5}s ease-in-out infinite`;
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(particle);
+            }
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0%, 100% {
+                    transform: translate(0, 0);
+                    opacity: 0;
+                }
+                10%, 90% {
+                    opacity: 1;
+                }
+                50% {
+                    transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        function revealMessage() {
+            const message = document.getElementById('hiddenMessage');
+            if (message.style.display === 'none' || message.style.display === '') {
+                message.style.display = 'block';
+            } else {
+                message.style.display = 'none';
+            }
+        }
+
+        function createFlowerRain() {
+            const flowers = ['🌸', '🌺', '🌹', '💐', '🌻', '🌷', '💝', '💖', '✨', '🎀', '💕', '🦋'];
+            
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const flower = document.createElement('div');
+                    flower.className = 'emoji-rain-item';
+                    flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+                    flower.style.left = Math.random() * 100 + 'vw';
+                    flower.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    
+                    document.body.appendChild(flower);
+                    
+                    setTimeout(() => flower.remove(), 4000);
+                }, i * 100);
+            }
+        }
+
+        createParticles();
+    </script>
+</body>
+</html>
