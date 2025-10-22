@@ -152,11 +152,36 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
+            padding: 12px 16px 12px 24px;
             background-color: var(--surface);
             border: 1px solid var(--line);
             border-radius: 12px;
             transition: background-color .3s ease;
+            position: relative;
+        }
+
+        .task-number {
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--bg);
+            box-shadow: 0 2px 8px rgba(124, 92, 255, 0.3);
+            z-index: 10;
+        }
+
+        .task-item.completed .task-number {
+            background: linear-gradient(135deg, var(--ok), #2ea858);
+            box-shadow: 0 2px 8px rgba(58, 227, 116, 0.3);
         }
         .task-item.completed {
             background-color: color-mix(in oklab, var(--ok) 15%, var(--surface));
@@ -170,6 +195,42 @@
             font-family: 'Montserrat', monospace;
             font-weight: 600;
             color: var(--accent);
+            position: relative;
+            cursor: help;
+        }
+
+        .time-delta-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            margin-bottom: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .time-delta-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: var(--surface-2);
+        }
+
+        .task-time:hover .time-delta-tooltip {
+            opacity: 1;
         }
 
         /* --- Footer & Cursor --- */
@@ -240,6 +301,7 @@
         let startTime = null;
         let currentTime = 0;
         let intervalId = null;
+        let accumulatedTime = 0; // Store elapsed time when stopped
 
         const newTaskNameInput = document.getElementById('new-task-name');
         const addTaskButton = document.getElementById('add-task-button');
@@ -258,13 +320,35 @@
 
         function renderTasks() {
             taskList.innerHTML = '';
-            tasks.forEach(task => {
+            tasks.forEach((task, index) => {
                 const taskElement = document.createElement('div');
                 taskElement.className = `task-item ${task.completed ? 'completed' : ''}`;
+                
+                // Calculate delta for completed tasks
+                let deltaTooltip = '';
+                if (task.completed && task.splitTime !== null) {
+                    const completedTasks = tasks.filter(t => t.completed && t.splitTime !== null);
+                    const currentTaskIndex = completedTasks.findIndex(t => t.id === task.id);
+                    
+                    if (currentTaskIndex > 0) {
+                        const previousTaskTime = completedTasks[currentTaskIndex - 1].splitTime;
+                        const delta = task.splitTime - previousTaskTime;
+                        const deltaText = delta >= 0 ? `+${formatTime(delta)}` : formatTime(delta);
+                        deltaTooltip = `<div class="time-delta-tooltip">Δ: ${deltaText}</div>`;
+                    } else {
+                        // First completed task
+                        deltaTooltip = `<div class="time-delta-tooltip">Start: ${formatTime(task.splitTime)}</div>`;
+                    }
+                }
+                
                 taskElement.innerHTML = `
+                    <div class="task-number">${index + 1}</div>
                     <span class="task-name">${task.name}</span>
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <span class="task-time">${task.completed ? formatTime(task.splitTime) : '--:--.--'}</span>
+                        <span class="task-time">
+                            ${task.completed ? formatTime(task.splitTime) : '--:--.--'}
+                            ${deltaTooltip}
+                        </span>
                         ${!task.completed ? `
                             <button class="btn secondary complete-button" data-task-id="${task.id}" ${!isRunning ? 'disabled' : ''}>
                                 Done
@@ -299,7 +383,8 @@
 
         function handleStartStop() {
             if (!isRunning) {
-                startTime = Date.now();
+                // Starting: preserve accumulated time
+                startTime = Date.now() - accumulatedTime;
                 currentTime = Date.now();
                 intervalId = setInterval(() => {
                     currentTime = Date.now();
@@ -309,8 +394,10 @@
                 startStopButton.classList.remove('secondary');
                 startStopButton.style.background = 'linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, var(--danger), #ff8a9e) border-box';
             } else {
+                // Stopping: save the current elapsed time
                 clearInterval(intervalId);
                 intervalId = null;
+                accumulatedTime = currentTime - startTime;
                 startStopButton.textContent = 'Start';
                 startStopButton.classList.add('secondary');
                  startStopButton.style.background = '';
@@ -332,7 +419,7 @@
         }
 
         function updateTotalTime() {
-            const totalTime = isRunning ? currentTime - startTime : 0;
+            const totalTime = isRunning ? currentTime - startTime : accumulatedTime;
             totalTimeDisplay.textContent = `Total: ${formatTime(totalTime)}`;
         }
 
